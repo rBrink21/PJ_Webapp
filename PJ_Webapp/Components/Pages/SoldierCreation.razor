@@ -1,27 +1,152 @@
 @page "/SoldierCreation"
 @using PJ_Webapp.Models
 @using PJ_Webapp.Data
+@using PJ_Webapp.Models.Enums
+@using System.Reflection.Metadata
 @inject DBServices db
 @rendermode InteractiveServer
 
 <h3>Soldier Creation</h3>
-<p>Soldier Name:</p> <input name="name" type="text" @bind="soldierName">
+<h4>Soldier Basics</h4>
+<span>Soldier Name:</span> <input name="name" type="text" @bind="soldierName">
+<br/>
+<span>Race:</span> <select name="race" id="race" @bind="race">
+    @foreach (SoldierRace race in Enum.GetValues(typeof(SoldierRace)))
+    {
+        <option value="@race">@race.ToCustomString()</option>
+    }
+</select>
+<br>
+<span>Loyalty: </span> <select name="loyalty" id="loyalty" @bind="loyalty">
+    @foreach (Loyalty loyalty in Enum.GetValues(typeof(Loyalty)))
+    {
+        <option value="@loyalty">@loyalty.ToCustomString()</option>
+    }
+</select>
+<br>
+<div>
+    <h4>Starting Skill Section</h4>
+    
+    <div id="field-skills">
+         <span>Field Skill 1: </span> 
+         <select name="fSkill1" id="fSkill1" @bind="fSkill1">
+             
+             @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+             {
+                 if (fSkill.GetCategory() == "Field Skills")
+                 { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                 
+             }
+         </select>
+         
+            <span>Field Skill 2: </span> 
+            <select name="fSkill2" id="fSkill2" @bind="fSkill2">
+             @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+             {
+                 if (fSkill.GetCategory() == "Field Skills")
+                 { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+             }
+            </select>            
+    </div>
+    <br>
+        <div id="artisan-skills">
+             <span>Artisan Skill 1: </span> 
+             <select name="aSkill1" id="aSkill1" @bind="aSkill1">
+                 
+                 @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                 {
+                     if (fSkill.GetCategory() == "Artisan Skills")
+                     { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                     
+                 }
+             </select>
+             
+                <span>Artisan Skill 2: </span> 
+                <select name="aSkill2" id="aSkill2" @bind="aSkill2">
+                 @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                 {
+                     if (fSkill.GetCategory() == "Artisan Skills")
+                     { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                 }
+                </select>            
+        </div>
 
-<p>Player ID:</p> <input type="text" name="pId" @bind="playerID">
+</div>
 
 <button @onclick="CreateSoldier">Save Soldier</button>
 
+
+<div id="debug-section">
+    <br>
+    <br/>
+    <br>
+    <br>
+    <span>debug mode</span> <input type="checkbox" @bind="debug_mode">
+    @if (debug_mode)
+    {
+        <div>
+            <h2>Debug</h2>
+            <p>PlayerId Override</p>
+            <input type="text" @bind="playerID">
+
+            <h2>Last Soldier</h2>
+            @if (lastSoldierMade != null)
+            {
+                <p>@lastSoldierMade.name</p>
+            }
+        </div>
+    }
+
+
+</div>
 @code {
-    //TODO Grab player ID from login session
+
+    bool debug_mode;
+    
+    
+    // Debug/Session info;
+    int playerID; //TODO Grab player ID from login session
+    Soldier lastSoldierMade = null;
+    
+    //Soldier Stats
     string soldierName;
-    int playerID;
+    SoldierRace race;
+    Loyalty loyalty;
+    //This isn't pretty but a Blazor constraint (afaik)
+    SoldierSkill aSkill1;
+    SoldierSkill aSkill2;
+    SoldierSkill fSkill1;
+    SoldierSkill fSkill2;
+    
+    
     private void CreateSoldier()
     {
-        if (soldierName != null && playerID != null)
+        bool formFilled = soldierName != null && playerID != null && aSkill1 != null && aSkill2 != null;
+        if (formFilled)
         {
-            Soldier newSoldier = new Soldier(soldierName, playerID);
+            Console.WriteLine("Form is filled!");
+            Soldier newSoldier = new Soldier(soldierName,race,loyalty);
+            InitializeSkills(newSoldier);
             db.SaveData(newSoldier);
         }
+        else
+        {
+            Console.WriteLine("Form not filled");
+        }
+        
         
     }
+
+    private void InitializeSkills(Soldier newSoldier)
+    {
+        bool skillsNotNull = aSkill1 != null && aSkill2 != null && fSkill1 != null && fSkill2 != null;
+        if (skillsNotNull)
+        {
+            SoldierSkill[] skillsToConvert = [aSkill1,aSkill2,fSkill1,fSkill2];
+            foreach (SoldierSkill skill in skillsToConvert)
+            {
+                newSoldier.UpgradeSkill(skill);
+            }
+        }
+    } 
 }

@@ -9,12 +9,15 @@ public class DBServices
     {
         dataContext = _dataContext;
     }
-
-    public List<Soldier> SaveData(Soldier soldier)
+    public void SaveData(Soldier soldier)
     {
         soldier.soldierId = Guid.NewGuid();
-        dataContext.Add(soldier);
+        dataContext.soldiers.Add(soldier);
+        foreach (Skill skill in soldier.skills)
+        {
+            skill.skillId = Guid.NewGuid();
+            dataContext.skills.Add(skill);
+        }
         dataContext.SaveChanges();
-        return dataContext.soldiers.ToList();
     }
 }
