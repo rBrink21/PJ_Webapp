@@ -1,10 +1,16 @@
+using Microsoft.EntityFrameworkCore;
 using PJ_Webapp.Components;
+using PJ_Webapp.Data;
+using PJ_Webapp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<DBServices>();
 
 var app = builder.Build();
 
