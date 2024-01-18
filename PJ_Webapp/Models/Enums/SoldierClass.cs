@@ -9,7 +9,8 @@ public enum SoldierClass
     SHARPSHOOTER,
     SUPPORT,
     ADEPT,
-    ARTISAN
+    ARTISAN,
+    GRUNT
 }
 public static class SoldierClassExtensions
 {
@@ -29,6 +30,8 @@ public static class SoldierClassExtensions
                 return "Adept";
             case SoldierClass.ARTISAN:
                 return "Artisan";
+            case SoldierClass.GRUNT:
+                return "Grunt";
             default:
                 Debug.Print("\"Missing case in SoldierClass.cs, using default toString\"");
                 return soldierClass.ToString();

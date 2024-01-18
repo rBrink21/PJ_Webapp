@@ -24,6 +24,4 @@ public class Skill
         this.name = name;
         level = 0;
     }
-    
-    
 }

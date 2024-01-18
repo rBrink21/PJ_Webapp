@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using PJ_Webapp.Models.Enums;
-
 namespace PJ_Webapp.Models;
 
 public class Soldier
@@ -10,20 +9,24 @@ public class Soldier
     public Guid soldierId { get; set; }
     public string name { get; set; }
     public int playerId { get; set; }
-    public List<Skill> skills { get; set; }
-    private SoldierClass soldierClass;
-    private int level; //TODO add level up mechanics
-    private int health;
-    private int mental;
+    public List<Skill> skills { get; set; } // TODO Spending skill points screen
+    private SoldierClass soldierClass { get; set; } //TODO Class selection screen
+    public int level { get; set; } 
+    public int health { get; set; } //TODO update methods
+    public int mental { get; set; } //TODO update methods
     public SoldierRace soldierRace { get; set; }
     public Loyalty loyalty { get; set; }
-    private string characterSheetLink;
+    public string characterSheetLink { get; set; } //TODO add button for management of character sheet links
     
     // Defaults
     private const int DEFAULT_HP = 6;
     private const int DEFAULT_MENTAL = 2;
     private const int DEFAULT_LVL = 0;
+    private static int[] levelUpCosts = [1, 2, 4, 8, 10]; //TODO T1 Mana stone level ups only right now
     
+    // Instance Variables;
+    private int availableSkillPoints = 0;
+    private bool roleAvailableForAssignment = false;
     public Soldier()
     {
         
@@ -44,6 +47,8 @@ public class Soldier
         level = DEFAULT_LVL;
         health = DEFAULT_HP;
         mental = DEFAULT_MENTAL;
+
+        characterSheetLink = " ";
     }
 
     public int UpgradeSkill(SoldierSkill skillToUpgrade)
@@ -74,5 +79,33 @@ public class Soldier
         }
 
         return upgradeCost;
+    }
+
+    public void LevelUp()
+    {
+        bool canLevelUp = true; //TODO add logic check w resourcemanager
+        
+        if (canLevelUp)
+        {
+            level += 1;
+            availableSkillPoints += 3;
+            if (soldierClass == SoldierClass.GRUNT)
+            {
+                roleAvailableForAssignment = true;
+            }
+            
+            // Database updating
+            // My ass is stuck here FR
+            // Borderline about to start writing the update staments myself although that would kinda invalidate using an ORM
+            
+        }
+    }
+
+    public int GetLevelUpCost()
+    {
+        return levelUpCosts[level];
+    }
+    public void AssignClass(SoldierClass role){
+        this.soldierClass = role;
     }
 }

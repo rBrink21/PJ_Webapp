@@ -1,10 +1,42 @@
 .soldier-element{
     border-style: solid;
     width: 20%;
+    box-shadow:0 0 10px rgba(0, 0, 0, 0.5);
 }
 .soldier-element span{
     padding-left: 20px;
 }
 .soldier-element p {
     padding-left: 20px;
+}
+#selection-screen {
+    position: fixed;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    width: 80%; 
+    max-width: 650px; 
+    background-color: rgba(255, 255, 255, 1); 
+    border: 2px solid #333; 
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+.exit-button {
+    position: fixed;
+    top: 10px; /* Adjust the top distance as needed */
+    right: 10px; /* Adjust the right distance as needed */
+    width: 40px; /* Fixed width for the square button */
+    height: 40px; /* Fixed height for the square button */
+    background-color: #3498db; /* Button background color */
+    color: #fff; /* Text color */
+    border: none;
+    border-radius: 5px; /* Adjust border-radius for rounded corners if desired */
+    cursor: pointer;
+    /* Add any additional styling as needed */
+}
+
+/* Add hover effect if desired */
+.exit-button:hover {
+    background-color: #2980b9; /* Change background color on hover */
 }
