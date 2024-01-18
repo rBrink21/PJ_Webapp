@@ -1,12 +1,46 @@
 @page "/RosterManagement"
 @using PJ_Webapp.Data
 @using PJ_Webapp.Models
+@using PJ_Webapp.Models.Enums
 @inject DBServices db
+@rendermode InteractiveServer
+<link rel="stylesheet" href="site.css"/>
 <h3>Roster Management</h3>
-
+@foreach (Soldier soldier in db.GetSoldiers())
+{
+    if (soldier == null) { return;}
+    <div class="soldier-element">
+        <h4>Soldier information</h4>
+        <p>Name: @soldier.name</p>
+        <p>Loyalty: @soldier.loyalty.ToCustomString()</p>
+        <p>Class: UNINPLEMENTED</p>
+        <p>Race: @soldier.soldierRace.ToCustomString()</p>
+        
+        <h5>Status</h5>
+        <p>Level : UNIMPLEMENTED</p>
+        <p>Health: UNIMPLEMENTED</p>
+        
+        <h5>Skills:</h5>
+    
+            @foreach (Skill skill in soldier.skills)
+            {
+                <span>@skill.name.ToCustomString()</span> <span>@skill.level</span>
+                <br/>
+            }
+        <h5>Management:</h5>
+        <button @onclick="() => {Console.WriteLine(soldier.name); DeleteSoldier(soldier); }">Delete Soldier</button>
+            
+    </div>
+}
 @code {
     //TODO grab playerId from session
     public int playerId = 1;
 
-
+    private void DeleteSoldier(Soldier soldier)
+    {
+        db.DeleteSoldier(soldier);
+        StateHasChanged();
+        Console.WriteLine("Deleted!");
+    }
+    
 }

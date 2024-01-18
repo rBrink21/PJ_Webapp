@@ -1,0 +1,10 @@
+.soldier-element{
+    border-style: solid;
+    width: 20%;
+}
+.soldier-element span{
+    padding-left: 20px;
+}
+.soldier-element p {
+    padding-left: 20px;
+}
