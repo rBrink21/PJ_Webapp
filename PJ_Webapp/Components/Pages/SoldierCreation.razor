@@ -1,16 +1,27 @@
 @page "/SoldierCreation"
+@using PJ_Webapp.Models
+@using PJ_Webapp.Data
+@inject DBServices db
+@rendermode InteractiveServer
+
 <h3>Soldier Creation</h3>
-<p>Soldier Name:</p> <input name="name" type="text">
+<p>Soldier Name:</p> <input name="name" type="text" @bind="soldierName">
 
-<p>Player ID:</p> <input type="text" name="pId">
+<p>Player ID:</p> <input type="text" name="pId" @bind="playerID">
 
-<button></button>
+<button @onclick="CreateSoldier">Save Soldier</button>
 
 @code {
     //TODO Grab player ID from login session
-
+    string soldierName;
+    int playerID;
     private void CreateSoldier()
     {
+        if (soldierName != null && playerID != null)
+        {
+            Soldier newSoldier = new Soldier(soldierName, playerID);
+            db.SaveData(newSoldier);
+        }
         
     }
 }

@@ -7,8 +7,8 @@ public class Soldier
 {
     [Key]
     public Guid soldierId { get; set; }
-    private string name;
-    private int playerId;
+    public string name { get; set; }
+    public int playerId { get; set; }
     private SoldierClass soldierClass;
     private int level;
     private int health;
