@@ -32,4 +32,9 @@ public class DBServices
         dataContext.soldiers.Remove(soldier);
         dataContext.SaveChanges();
     }
+
+    public void SaveChanges()
+    {
+        dataContext.SaveChanges();
+    }
 }

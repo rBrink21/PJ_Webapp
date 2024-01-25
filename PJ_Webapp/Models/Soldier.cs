@@ -10,9 +10,10 @@ public class Soldier
     public string name { get; set; }
     public int playerId { get; set; }
     public List<Skill> skills { get; set; } // TODO Spending skill points screen
-    private SoldierClass soldierClass { get; set; } //TODO Class selection screen
+    public SoldierClass soldierClass { get; set; } //TODO Class selection screen
     public int level { get; set; } 
-    public int health { get; set; } //TODO update methods
+    public int currentHealth { get; set; } //TODO update methods
+    public int maxHealth { get; set; }
     public int mental { get; set; } //TODO update methods
     public SoldierRace soldierRace { get; set; }
     public Loyalty loyalty { get; set; }
@@ -43,9 +44,11 @@ public class Soldier
         this.soldierRace = race;
         this.loyalty = loyalty;
         skills = new List<Skill>();
+        this.soldierClass = SoldierClass.GRUNT;
         
         level = DEFAULT_LVL;
-        health = DEFAULT_HP;
+        currentHealth = DEFAULT_HP;
+        maxHealth = DEFAULT_HP;
         mental = DEFAULT_MENTAL;
 
         characterSheetLink = " ";
@@ -93,11 +96,6 @@ public class Soldier
             {
                 roleAvailableForAssignment = true;
             }
-            
-            // Database updating
-            // My ass is stuck here FR
-            // Borderline about to start writing the update staments myself although that would kinda invalidate using an ORM
-            
         }
     }
 
