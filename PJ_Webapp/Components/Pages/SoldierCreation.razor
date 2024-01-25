@@ -122,6 +122,7 @@
     private void CreateSoldier()
     {
         bool formFilled = soldierName != null && playerID != null && aSkill1 != null && aSkill2 != null;
+        Console.WriteLine(formFilled);
         if (formFilled)
         {
             Console.WriteLine("Form is filled!");
@@ -143,9 +144,11 @@
         if (skillsNotNull)
         {
             SoldierSkill[] skillsToConvert = [aSkill1,aSkill2,fSkill1,fSkill2];
-            foreach (SoldierSkill skill in skillsToConvert)
+            foreach (SoldierSkill skillName in skillsToConvert)
             {
-                newSoldier.UpgradeSkill(skill);
+                Skill skill = new Skill(skillName);
+                newSoldier.InitializeSkill(skill);
+                
             }
         }
     } 

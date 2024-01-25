@@ -24,4 +24,9 @@ public class Skill
         this.name = name;
         level = 0;
     }
+
+    public int GetUpgradeCost()
+    {
+        return level + 1;
+    }
 }

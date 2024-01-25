@@ -26,18 +26,13 @@ public class Soldier
     private static int[] levelUpCosts = [1, 2, 4, 8, 10]; //TODO T1 Mana stone level ups only right now
     
     // Instance Variables;
-    private int availableSkillPoints = 0;
-    private bool roleAvailableForAssignment = false;
+    public int availableSkillPoints { get; set; } = 0;
+    public bool roleAvailableForAssignment { get; set; } = false;
     public Soldier()
     {
         
     }
-    public Soldier(string name, int playerId)
-    {
-        this.name = name;
-        this.playerId = playerId;
-    }
-
+    
     public Soldier(string name, SoldierRace race, Loyalty loyalty)
     {
         this.name = name;
@@ -45,7 +40,6 @@ public class Soldier
         this.loyalty = loyalty;
         skills = new List<Skill>();
         this.soldierClass = SoldierClass.GRUNT;
-        
         level = DEFAULT_LVL;
         currentHealth = DEFAULT_HP;
         maxHealth = DEFAULT_HP;
@@ -54,49 +48,58 @@ public class Soldier
         characterSheetLink = " ";
     }
 
-    public int UpgradeSkill(SoldierSkill skillToUpgrade)
+    public void UpgradeSkill(Skill skillToUpgrade)
     {
-        int upgradeCost = 0;
-        bool validUpgrade = true; //Add validation to make sure there is
-                                  //enough mana stones or additional criteria are met here
-
-        if (validUpgrade)
+        if (skillToUpgrade.GetUpgradeCost() > availableSkillPoints) { return; }
+        
+        foreach (Skill skill in skills) 
         {
-            bool foundSkill = false;
-            foreach (Skill skill in skills)
+            if (skill.name == skillToUpgrade.name)
             {
-                
-                if (skill.name == skillToUpgrade)
-                {
-                    skill.level += 1;
-                    upgradeCost = skill.level + 1;
-                    foundSkill = true;
-                }
+                availableSkillPoints -= skillToUpgrade.GetUpgradeCost();
+                skill.level += 1;
+                return;
             }
-
-            if (foundSkill) { return upgradeCost;}
-
-            Skill newSkill = new Skill(skillToUpgrade);
-            skills.Add(newSkill);
-            return 1; // Upgrade cost for -1 to 0
         }
-
-        return upgradeCost;
+        InitializeSkill(skillToUpgrade);
     }
 
-    public void LevelUp()
+    public void InitializeSkill(Skill newSkill)
+    {
+        foreach (Skill skill in skills)
+        {
+            if (skill.name == newSkill.name)
+            {
+                skill.level += 1;
+                return;
+            }
+        }
+        skills.Add(newSkill);
+    }
+    public bool LevelUp()
     {
         bool canLevelUp = true; //TODO add logic check w resourcemanager
         
         if (canLevelUp)
         {
             level += 1;
-            availableSkillPoints += 3;
-            if (soldierClass == SoldierClass.GRUNT)
+            switch (level)
             {
-                roleAvailableForAssignment = true;
+                case 1:
+                {
+                    roleAvailableForAssignment = true;
+                    break;
+                }
+                case 2:
+                {
+                    availableSkillPoints += 3;
+                    break;
+                }
+                //TODO Expand case structure
             }
         }
+
+        return canLevelUp;
     }
 
     public int GetLevelUpCost()
@@ -105,5 +108,6 @@ public class Soldier
     }
     public void AssignClass(SoldierClass role){
         this.soldierClass = role;
+        roleAvailableForAssignment = false;
     }
 }

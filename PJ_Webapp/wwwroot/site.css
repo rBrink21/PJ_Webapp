@@ -14,10 +14,17 @@
 .soldier-element p {
     padding-left: 20px;
 }
+.stat-container span{
+    color: black;
+}
+.badge{
+    background-color: #0a58ca;
+
+}
 #soldier-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 #selection-screen {
@@ -31,7 +38,21 @@
     border: 2px solid #333; 
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+#class-selection-screen{
     z-index: 9999;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 1);
+    padding: 20px;
+}
+#selected-skills button {
+    margin-left: 5px;
 }
 .exit-button {
     position: fixed;

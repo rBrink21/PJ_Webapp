@@ -4,13 +4,13 @@ namespace PJ_Webapp.Models.Enums;
 
 public enum SoldierClass
 {
+    GRUNT,
     HEAVY,
     ASSAULT,
     SHARPSHOOTER,
     SUPPORT,
     ADEPT,
-    ARTISAN,
-    GRUNT
+    ARTISAN
 }
 public static class SoldierClassExtensions
 {
