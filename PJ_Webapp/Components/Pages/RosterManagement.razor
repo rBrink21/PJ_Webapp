@@ -6,35 +6,38 @@
 @rendermode InteractiveServer
 <link rel="stylesheet" href="site.css"/>
 <h3>Roster Management</h3>
-@foreach (Soldier soldier in db.GetSoldiers())
-{
-    if (soldier == null) { return;}
-    <div class="soldier-element">
+<div id="soldier-container">
+    @foreach (Soldier soldier in db.GetSoldiers())
+    {
+        if (soldier == null) { return; }
         
-        <h4>Soldier information</h4>
-        <p>Name: @soldier.name</p>
-        <p>Loyalty: @soldier.loyalty.ToCustomString()</p>
-        <p>Class: UNINPLEMENTED</p>
-        <p>Race: @soldier.soldierRace.ToCustomString()</p>
-
-        <h5>Status</h5>
-        <p>Level : UNIMPLEMENTED</p>
-        <p>Health: UNIMPLEMENTED</p>
-
-        <h5>Skills:</h5>
-
-        @foreach (Skill skill in soldier.skills)
-        {
-            <span>@skill.name.ToCustomString()</span>
-            <span>@skill.level</span>
-            <br/>
-        }
-        <h5>Management:</h5>
-        <button @onclick="() => SelectSoldier(soldier)">Select</button>
-        <button @onclick="() => { Console.WriteLine(soldier.name); DeleteSoldier(soldier); }">Delete Soldier</button>
-
-    </div>
-}
+        <div class="soldier-element card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">Soldier Information</h4>
+                <p class="card-text">Name: @soldier.name</p>
+                <p class="card-text">Loyalty: @soldier.loyalty.ToCustomString()</p>
+                <p class="card-text">Class: @soldier.soldierClass.ToCustomString()</p>
+                <p class="card-text">Race: @soldier.soldierRace.ToCustomString()</p>
+        
+                <h5 class="card-title">Status</h5>
+                <p class="card-text">Level: @soldier.level</p>
+                <p class="card-text">Health: @soldier.currentHealth / @soldier.maxHealth</p>
+        
+                <h5 class="card-title">Skills</h5>
+                @foreach (Skill skill in soldier.skills)
+                {
+                    <span class="badge badge-primary">@skill.name.ToCustomString()</span>
+                    <span class="badge badge-secondary">@skill.level</span>
+                    <br />
+                }
+                
+                <h5 class="card-title">Management</h5>
+                <button class="btn btn-success" @onclick="() => SelectSoldier(soldier)">Select</button>
+                <button class="btn btn-danger" @onclick="() => { Console.WriteLine(soldier.name); DeleteSoldier(soldier); }">Delete Soldier</button>
+            </div>
+        </div>
+    }
+</div>
 
 @if (selectedSoldier != null)
 {
@@ -42,20 +45,34 @@
         <h3>@selectedSoldier.name</h3>
         <button @onclick="() => {selectedSoldier = null; }" class="exit-button"><b>X</b></button>
         <div id="selected-vitals">
-            <h5> <b>Vitals</b></h5>
-            <span>Level: @selectedSoldier.level</span>
-            <span>Health: @selectedSoldier.health</span>
-        </div>
+             <h5><b>Vitals</b></h5>
+             <div class="stat-container">
+                 <button class="adjust-btn" @onclick="() => UpdateMental(selectedSoldier,-1)">-</button>
+                 <span>Mental: @selectedSoldier.mental</span>
+                 <button class="adjust-btn" @onclick="() => UpdateMental(selectedSoldier,1)">+</button>
+             </div>
+             <div class="stat-container">
+                 <button class="adjust-btn" @onclick="() => UpdateHP(selectedSoldier, -1)">-</button>
+                 <span>Health: @selectedSoldier.currentHealth</span>
+                 <button class="adjust-btn" @onclick="() => UpdateHP(selectedSoldier,1)">+</button>
+             </div>
+             <span>Level: @selectedSoldier.level</span>
+             <span>Max Health: @selectedSoldier.maxHealth</span>
+         </div>
+        
         <div id="selected-skills">
             <h5><b>Skills</b></h5>
             @foreach (Skill skill in selectedSoldier.skills)
             {
+                //TODO add skill upgrading logic
                 <p>@skill.name.ToCustomString() : @skill.level</p>
             }
         </div>
+        
         <div id="Functions">
             <h5><b>Functions</b></h5>
-            <button @onclick="() => {selectedSoldier.LevelUp();}">Level up</button>
+            <button @onclick="() => {LevelUpSoldier(selectedSoldier);}">Level up</button>
+            
         </div>
     </div>
 }
@@ -65,6 +82,37 @@
     public int playerId = 1;
     Soldier selectedSoldier = null;
 
+    private bool LevelUpSoldier(Soldier soldier)
+    {
+        bool canLevel = true; //TODO add sensible checks
+        if (canLevel)
+        {
+            soldier.LevelUp();
+        }
+        //For displaying the succesfull/unsuccesfull textbox
+        db.SaveChanges();
+        StateHasChanged();
+        return canLevel;
+    }
+
+    private void UpdateHP(Soldier soldier, int changeAmount)
+    {
+        int newAmount = soldier.currentHealth + changeAmount;
+        Console.WriteLine((newAmount));
+        soldier.currentHealth = Math.Clamp(newAmount, 0, soldier.maxHealth);
+        db.SaveChanges();
+        StateHasChanged();
+    }
+
+    private void UpdateMental(Soldier soldier, int changeAmount)
+    {
+        int newAmount = soldier.mental + changeAmount;
+        soldier.mental = Math.Clamp(newAmount, -1, 5);
+        db.SaveChanges();
+        StateHasChanged();
+        
+    }
+    
     private void SelectSoldier(Soldier soldier)
     {
         if (selectedSoldier != null)
