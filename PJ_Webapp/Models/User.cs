@@ -1,0 +1,51 @@
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+
+namespace PJ_Webapp.Models;
+
+public class User
+{
+    [Key]
+    public Guid userID { get; set; }
+    public string username { get; set; }
+    public byte[] hashedPassword { get; set; }
+    public byte[] salt { get; set; }
+    public bool isAdmin { get; set; }
+
+    public User()
+    {
+        
+    }
+
+    public User(string username, string passwordEntered)
+    {
+        this.username = username;
+
+        salt = new byte[16];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(salt);
+        }
+
+        hashedPassword = HashPassword(passwordEntered);
+
+        isAdmin = false;
+    }
+
+    private byte[] HashPassword(string plainTextPassword)
+    {
+        return KeyDerivation.Pbkdf2(
+            password: plainTextPassword,
+            salt: salt,
+            prf: KeyDerivationPrf.HMACSHA512,
+            iterationCount: 10000,
+            numBytesRequested: 256 / 8);
+    }
+
+    public bool IsCorrectPassword(string plainTextPassword)
+    {
+        byte[] hashedEnteredPassword = HashPassword(plainTextPassword);
+        return hashedEnteredPassword.SequenceEqual(hashedPassword);
+    }
+}

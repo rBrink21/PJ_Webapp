@@ -15,13 +15,17 @@
     <div id="rc-block">
         <h4>@category</h4>
         <ul>
-             @foreach (Resource resource in db.GetResources())
-                    {
-                        if (resource.category == category){
-                            <li>@resource.name : @resource.amount</li>
-                        }
-                    }
+            @foreach (Resource resource in db.GetResources())
+            {
+                if (resource.category == category)
+                {
+                    <div class="rc-container">
+                        <li>@resource.name : @resource.amount</li>
+                    </div>
+                }
+            }
         </ul>
+        
     </div>
 }
 
