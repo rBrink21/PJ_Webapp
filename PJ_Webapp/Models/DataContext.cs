@@ -10,6 +10,8 @@ public class DataContext : DbContext
     }
     public DbSet<Soldier> soldiers { get; set; }
     public DbSet<Skill> skills { get; set; }
+    
+    public DbSet<Resource> resources { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

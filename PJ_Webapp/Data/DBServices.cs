@@ -22,6 +22,18 @@ public class DBServices
         }
         dataContext.SaveChanges();
     }
+
+    public void SaveData(Resource resource)
+    {
+        resource.resourceId = Guid.NewGuid();
+        dataContext.resources.Add(resource);
+        dataContext.SaveChanges();
+    }
+
+    public List<Resource> GetResources()
+    {
+        return dataContext.resources.ToList();
+    }
     public List<Soldier> GetSoldiers()
     {
         return dataContext.soldiers.Include(s => s.skills).ToList();

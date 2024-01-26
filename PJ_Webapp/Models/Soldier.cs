@@ -9,15 +9,17 @@ public class Soldier
     public Guid soldierId { get; set; }
     public string name { get; set; }
     public int playerId { get; set; }
-    public List<Skill> skills { get; set; } // TODO Spending skill points screen
-    public SoldierClass soldierClass { get; set; } //TODO Class selection screen
+    public List<Skill> skills { get; set; } 
+    public SoldierClass soldierClass { get; set; } 
     public int level { get; set; } 
-    public int currentHealth { get; set; } //TODO update methods
+    public int currentHealth { get; set; } 
     public int maxHealth { get; set; }
-    public int mental { get; set; } //TODO update methods
+    public int mental { get; set; } 
     public SoldierRace soldierRace { get; set; }
     public Loyalty loyalty { get; set; }
     public string characterSheetLink { get; set; } //TODO add button for management of character sheet links
+
+    public SoldierHealthStatus healthStatus { get; set; } = SoldierHealthStatus.HEALTHY;
     
     // Defaults
     private const int DEFAULT_HP = 6;
@@ -39,7 +41,7 @@ public class Soldier
         this.soldierRace = race;
         this.loyalty = loyalty;
         skills = new List<Skill>();
-        this.soldierClass = SoldierClass.GRUNT;
+        soldierClass = SoldierClass.GRUNT;
         level = DEFAULT_LVL;
         currentHealth = DEFAULT_HP;
         maxHealth = DEFAULT_HP;
@@ -63,7 +65,6 @@ public class Soldier
         }
         InitializeSkill(skillToUpgrade);
     }
-
     public void InitializeSkill(Skill newSkill)
     {
         foreach (Skill skill in skills)
@@ -101,7 +102,6 @@ public class Soldier
 
         return canLevelUp;
     }
-
     public int GetLevelUpCost()
     {
         return levelUpCosts[level];

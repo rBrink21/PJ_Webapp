@@ -21,6 +21,7 @@
                 
                 <h5 class="card-title">Status</h5>
                 <p class="card-text">Level: @soldier.level</p>
+                <p class="card-text">Health Status: @soldier.healthStatus.ToCustomString()</p>
                 <p class="card-text">Health: @soldier.currentHealth / @soldier.maxHealth</p>
                 <p class="card-text">Mental: @soldier.mental</p>
                 <h5 class="card-title">Skills</h5>
@@ -62,6 +63,7 @@
                 <span>Health: @selectedSoldier.currentHealth</span>
                 <button class="adjust-btn" @onclick="() => UpdateHP(selectedSoldier,1)">+</button>
             </div>
+            <span>Health Status : @selectedSoldier.healthStatus</span>
             <span>Level: @selectedSoldier.level</span>
             <span>Max Health: @selectedSoldier.maxHealth</span>
         </div>
@@ -117,19 +119,24 @@
 }
     
 @code {
-
     //TODO grab playerId from session
+    
+    //Session Variables
     public int playerId = 1;
+    
+    //UI Variables
     Soldier selectedSoldier = null;
     private bool classSelectionScreenOpen = false;
     private bool selectedSoldierScreenOpen = false;
-
+    
+    
     private void UpgradeSkill(Soldier soldier, Skill skill)
     {
         soldier.UpgradeSkill(skill);
         StateHasChanged();
         db.SaveChanges();
     }
+    
     private void AssignClass(Soldier soldier, SoldierClass role)
     {
         soldier.AssignClass(role);
@@ -138,6 +145,13 @@
         db.SaveChanges();
     }
 
+    private void UpdateHealthStatus(Soldier soldier, SoldierHealthStatus healthStatus)
+    {
+        soldier.healthStatus = healthStatus;
+        StateHasChanged();
+        db.SaveChanges();
+    } // Might be an admin setting
+    
     private bool LevelUpSoldier(Soldier soldier)
     {
         bool canLevel = true; //TODO add sensible checks
@@ -151,7 +165,7 @@
         StateHasChanged();
         return canLevel;
     }
-
+    
     private void UpdateHP(Soldier soldier, int changeAmount)
     {
         int newAmount = soldier.currentHealth + changeAmount;
@@ -160,7 +174,7 @@
         db.SaveChanges();
         StateHasChanged();
     }
-
+    
     private void UpdateMental(Soldier soldier, int changeAmount)
     {
         int newAmount = soldier.mental + changeAmount;
@@ -169,7 +183,7 @@
         StateHasChanged();
 
     }
-
+    
     private void SelectSoldier(Soldier soldier)
     {
         if (selectedSoldier != null)
@@ -181,7 +195,7 @@
             selectedSoldier = soldier;
         }
     }
-
+    
     private void DeleteSoldier(Soldier soldier)
     {
         db.DeleteSoldier(soldier);

@@ -1,0 +1,96 @@
+@page "/Stockpile"
+@inject DBServices db
+@using PJ_Webapp.Models
+@using PJ_Webapp.Data
+@rendermode InteractiveServer
+<link rel="stylesheet" href="site.css"/>
+<h3>The Stockpile</h3>
+@foreach (Resource resource in db.GetResources())
+{
+    <p>@resource.name : @resource.amount -- @resource.category</p>
+}
+<button @onclick="() => {createNewResourceMenuOpen = true;}">Create New Resource</button>
+@if (createNewResourceMenuOpen)
+{
+    <div class="info-panel">
+        <button class="exit-button" @onclick="() => {createNewResourceMenuOpen = false;}">X</button>
+        <span>Name: </span> <input type="text" @bind="newResourceName"/>
+        <br/>
+        <span>Amount: </span> <input type="number" @bind="newResourceAmount"/>
+        <br/>
+        <span>Type: </span><select @bind="newResourceCategory">
+            @foreach (ResourceCategory category in Enum.GetValues(typeof(ResourceCategory)))
+            {
+                <option value="@category">@category.ToString()</option>
+            }
+        </select>
+        <br/>
+        <button class="btn-success" @onclick="CreateResource">Create</button>
+        @if (dialogueBoxOpen)
+        {
+            <div class="popup" id="new-resource-menu-result">
+                <p>@dialogueText</p>
+                <button @onclick="() => {dialogueBoxOpen = false; }">Close</button>
+            </div>
+            
+        }
+        </div>
+}
+
+@code {
+    //UI Variables
+    //TODO generalize these into a function, maybe make a UI handler service we can dependency inject?
+    bool createNewResourceMenuOpen = false;
+    bool dialogueBoxOpen = false;
+    string dialogueText;
+    
+    //New resource form binds
+    string newResourceName;
+    int newResourceAmount;
+    ResourceCategory newResourceCategory;
+
+    
+    
+    private void CreateResource()
+    {
+        bool formFilled = newResourceName != null && newResourceAmount != null && newResourceCategory != null;
+        if (formFilled)
+        {
+            Resource newResource = new Resource(newResourceName, newResourceAmount, newResourceCategory);
+
+            bool resourceAlreadyExists = false;
+            foreach (Resource resource in db.GetResources())
+            {
+                if (resource.name == newResource.name)
+                {
+                    resourceAlreadyExists = true;
+                }
+                
+            }
+
+            if (resourceAlreadyExists)
+            {
+                DialogueBox("Resource already exists, update the regular way!");
+            }
+            else
+            {
+                db.SaveData(newResource);
+                db.SaveChanges();
+                DialogueBox("Success!");
+                StateHasChanged();
+            }
+            
+        }
+        else
+        {
+            DialogueBox("You must fill out the entire form!");
+        }
+        
+    }
+
+    private void DialogueBox(string message)
+    {
+        this.dialogueText = message;
+        dialogueBoxOpen = true;
+    }
+}

@@ -100,20 +100,15 @@
 
 </div>
 @code {
-
-    bool debug_mode;
-    
-    
     // Debug/Session info;
     int playerID; //TODO Grab player ID from login session
     Soldier lastSoldierMade = null;
-    
-    //Soldier Stats
+    bool debug_mode;
+    //Form binds
     string soldierName;
     SoldierRace race;
     Loyalty loyalty;
-    //This isn't pretty but a Blazor constraint (afaik)
-    SoldierSkill aSkill1;
+    SoldierSkill aSkill1; //This isn't pretty but a Blazor constraint (afaik)
     SoldierSkill aSkill2;
     SoldierSkill fSkill1;
     SoldierSkill fSkill2;
