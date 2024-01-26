@@ -44,7 +44,7 @@
 
 @if (selectedSoldier != null)
 {
-    <div id="selection-screen">
+    <div class="info-panel" id="selection-screen">
         <h3>@selectedSoldier.name</h3>
         @if (selectedSoldier.soldierClass != null)
         {
@@ -100,7 +100,7 @@
             }
             @if (classSelectionScreenOpen)
             {
-                <div id="class-selection-screen">
+                <div class="info-panel"id="class-selection-screen">
                     <button @onclick="() => {classSelectionScreenOpen = false;}" class="exit-button"><b>X</b></button>
                     <h3>Class Selection</h3>
                     @foreach (SoldierClass role in Enum.GetValues(typeof(SoldierClass)))

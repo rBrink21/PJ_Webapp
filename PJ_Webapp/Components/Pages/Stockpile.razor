@@ -2,14 +2,31 @@
 @inject DBServices db
 @using PJ_Webapp.Models
 @using PJ_Webapp.Data
+@using PJ_Webapp.Models.Enums
 @rendermode InteractiveServer
 <link rel="stylesheet" href="site.css"/>
 <h3>The Stockpile</h3>
-@foreach (Resource resource in db.GetResources())
+@if (db.GetResources().Count < STARTING_RESOURCES)
 {
-    <p>@resource.name : @resource.amount -- @resource.category</p>
+    InitializeResources();
 }
+@foreach (ResourceCategory category in Enum.GetValues(typeof(ResourceCategory)))
+{
+    <div id="rc-block">
+        <h4>@category</h4>
+        <ul>
+             @foreach (Resource resource in db.GetResources())
+                    {
+                        if (resource.category == category){
+                            <li>@resource.name : @resource.amount</li>
+                        }
+                    }
+        </ul>
+    </div>
+}
+
 <button @onclick="() => {createNewResourceMenuOpen = true;}">Create New Resource</button>
+
 @if (createNewResourceMenuOpen)
 {
     <div class="info-panel">
@@ -18,14 +35,7 @@
         <br/>
         <span>Amount: </span> <input type="number" @bind="newResourceAmount"/>
         <br/>
-        <span>Type: </span><select @bind="newResourceCategory">
-            @foreach (ResourceCategory category in Enum.GetValues(typeof(ResourceCategory)))
-            {
-                <option value="@category">@category.ToString()</option>
-            }
-        </select>
-        <br/>
-        <button class="btn-success" @onclick="CreateResource">Create</button>
+        <button class="btn-success" @onclick="CreateCustomResource">Create</button>
         @if (dialogueBoxOpen)
         {
             <div class="popup" id="new-resource-menu-result">
@@ -47,16 +57,27 @@
     //New resource form binds
     string newResourceName;
     int newResourceAmount;
-    ResourceCategory newResourceCategory;
 
+    //Init variables
+    int STARTING_RESOURCES = 23;
     
-    
-    private void CreateResource()
+    private void InitializeResources()
     {
-        bool formFilled = newResourceName != null && newResourceAmount != null && newResourceCategory != null;
+        foreach (ResourceType resourceType in Enum.GetValues(typeof(ResourceType)))
+        {
+            Resource newResource = new Resource(resourceType, 0);
+            db.SaveData(newResource);
+            db.SaveChanges();
+        }
+        StateHasChanged();
+    }
+    
+    private void CreateCustomResource()
+    {
+        bool formFilled = newResourceName != null && newResourceAmount != null;
         if (formFilled)
         {
-            Resource newResource = new Resource(newResourceName, newResourceAmount, newResourceCategory);
+            Resource newResource = new Resource(newResourceName, newResourceAmount);
 
             bool resourceAlreadyExists = false;
             foreach (Resource resource in db.GetResources())

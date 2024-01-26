@@ -4,11 +4,11 @@ public enum ResourceCategory
 {
     ALCHEMY,
     TANNING,
-    MANA,
+    MANA_STONES,
     DIMENSIONAL,
     ORE,
     RESEARCH,
     MECHANISMS,
-    SOUL,
+    SOUL_SHARDS,
     OTHER
 }
