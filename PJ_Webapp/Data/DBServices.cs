@@ -55,20 +55,28 @@ public class DBServices
     public User? GetUserByUsername(string username)
     {
         User? user = dataContext.users.FirstOrDefault(u => u.username == username);
+        dataContext.users.Attach(user);
         return user;
     }
 
     public Resource GetResourceByType(ResourceType type)
     {
-        Resource? result = dataContext.resources.AsEnumerable().FirstOrDefault(r => r.type == type);
+        Resource? result = dataContext.resources.FirstOrDefault(r => r.type == type);
+        dataContext.resources.Attach(result);
         return result;
         //Not possible null reference return, all resources in the ENUM are populated at start of program.
 
     }
-    public Resource? GetResourceByName(string name)
-    {
-        return dataContext.resources.AsEnumerable().FirstOrDefault(r => r.name == name);
-    }
+   public Resource? GetResourceByName(string name)
+     {
+         Resource? result = dataContext.resources.FirstOrDefault(r => r.name == name);
+         if (result != null)
+         {
+             dataContext.resources.Attach(result);
+         }
+
+         return result;
+     }
     public void DeleteSoldier(Soldier soldier)
     {
         dataContext.soldiers.Remove(soldier);
@@ -77,6 +85,12 @@ public class DBServices
 
     public void SaveChanges()
     {
+        dataContext.SaveChanges();
+    }
+
+    public void Delete(Resource resource)
+    {
+        dataContext.resources.Remove(resource);
         dataContext.SaveChanges();
     }
 }

@@ -21,7 +21,7 @@
 else
 {
     <h3>Logged in! You're all good to continue!</h3>
-    <button @onclick="() => {session.LoggedInUser = null;}">Log out!</button>
+    <button @onclick="() => {session.LoggedInUser = null; StateHasChanged();}">Log out!</button>
 }
 
 @if (createUserPanel)
@@ -85,6 +85,7 @@ else
         if (ValidateUsername(usernameCreate) & ValidatePassword(passwordCreate))
         {
             User user = new User(usernameCreate, passwordCreate);
+            user.isAdmin = true;
             db.SaveData(user);
             DialogueBox("User Created!");
         }

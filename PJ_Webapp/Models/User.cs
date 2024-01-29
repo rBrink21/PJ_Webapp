@@ -31,9 +31,6 @@ public class User
         }
 
         hashedPassword = HashPassword(passwordEntered);
-
-        isAdmin = false;
-
         soldiers = new List<Soldier>();
     }
 

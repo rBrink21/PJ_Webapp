@@ -69,6 +69,7 @@ else
         {
             session.LoggedInUser = userAttemptedLogin;
             DialogueBox("Successful login!");
+            StateHasChanged();
         }
         else
         {

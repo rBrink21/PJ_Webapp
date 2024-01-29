@@ -1,0 +1,101 @@
+@page "/Admin_Management"
+@using PJ_Webapp.Data
+@using PJ_Webapp.Models
+@using PJ_Webapp.Models.Enums
+@inject UserService session
+@inject DBServices db
+@rendermode InteractiveServer
+<link rel="stylesheet" href="site.css">
+@if (session.LoggedInUser is { isAdmin: true } || debug)
+{
+    <h3>Admin</h3>
+    <button @onclick="() => {resourceScreen = true; }">Resource Management</button>
+    <button @onclick="() => {soldierScreen = true; }">Soldier Management</button>
+    <button @onclick="() => {userScreen = true; }">User Management</button>
+
+
+    if (resourceScreen)
+    {
+        <div id="resourceManagement" class="info-panel">
+            <button class="exit-button"  @onclick="() => resourceScreen = false">X</button>
+            <span>Type: </span><select @bind="resourceName">
+                @foreach (Resource r in db.GetResources())
+                {
+                    <option value="@r.name">@r.name</option>
+                }
+            </select>
+            <span>Action:</span> <select @bind="action">
+                <option value="add">Add</option>
+                <option value="subtract">Subtract</option>
+                <option value="set">Set</option>
+                <option value="delete">Delete</option>
+            </select>
+            <span>Amount:</span> <input @bind="amount" type="number"/>
+            <button @onclick="() => {submitResourceButton();}">Submit</button>
+        </div>
+    }
+}
+
+@code {
+    // UI variables
+    bool resourceScreen = false;
+    bool soldierScreen = false;
+    bool userScreen = false;
+    bool debug = true;
+    
+    
+    // Form binds
+    string action;
+    string resourceName;
+    int amount;
+    
+
+    private void AddResources(string resourceName, int amount)
+    {
+        Resource resource = db.GetResourceByName(resourceName);
+        resource.amount += amount;
+        db.SaveChanges();
+    }
+
+    private void SubtractResources(string resourceName, int amount)
+    {
+        Resource resource = db.GetResourceByName(resourceName);
+        resource.amount -= amount;
+        db.SaveChanges();
+    }
+
+    private void SetResources(string resourceName, int amount)
+    {
+        Resource resource = db.GetResourceByName(resourceName);
+        resource.amount = amount;
+        db.SaveChanges();
+    }
+
+    private void DeleteResource(string resourceName)
+    {
+        Resource resource = db.GetResourceByName(resourceName);
+        db.Delete(resource);
+        db.SaveChanges();
+    }
+
+    private void submitResourceButton()
+    {
+        bool resourceFormFilled = action != null && resourceName != null && amount != null;
+
+        if (resourceFormFilled)
+        {
+            switch (action)
+            {
+                case "add" : AddResources(resourceName,amount);  break;
+                case "subtract" : SubtractResources(resourceName,amount); break;
+                case "set" : SetResources(resourceName,amount); break;
+                case "delete" : DeleteResource(resourceName); break;
+                
+                default: Console.WriteLine("something went wrong AdminManagement.razor");  break;
+               
+            }
+        }
+
+    }
+
+}
