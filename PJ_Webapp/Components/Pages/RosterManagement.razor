@@ -3,44 +3,31 @@
 @using PJ_Webapp.Models
 @using PJ_Webapp.Models.Enums
 @inject DBServices db
+@inject UserService session
 @rendermode InteractiveServer
 <link rel="stylesheet" href="site.css"/>
 <h3>Roster Management</h3>
-<div id="soldier-container">
-    @foreach (Soldier soldier in db.GetSoldiers())
-    {
-        if (soldier == null) { return; }
-        
-        <div class="soldier-element card mb-3">
-            <div class="card-body">
-                <h4 class="card-title">Soldier Information</h4>
-                <p class="card-text">Name: @soldier.name</p>
-                <p class="card-text">Loyalty: @soldier.loyalty.ToCustomString()</p>
-                <p class="card-text">Class: @soldier.soldierClass.ToCustomString()</p>
-                <p class="card-text">Race: @soldier.soldierRace.ToCustomString()</p>
-                
-                <h5 class="card-title">Status</h5>
-                <p class="card-text">Level: @soldier.level</p>
-                <p class="card-text">Health Status: @soldier.healthStatus.ToCustomString()</p>
-                <p class="card-text">Health: @soldier.currentHealth / @soldier.maxHealth</p>
-                <p class="card-text">Mental: @soldier.mental</p>
-                <h5 class="card-title">Skills</h5>
-                @foreach (Skill skill in soldier.skills)
-                {
-                    <div class="badge">
-                    <span class="badge badge-primary">@skill.name.ToCustomString()</span>
-                    <span class="badge badge-secondary">@skill.level</span>
-                    </div>
-                    <br />
-                }
-                
-                <h5 class="card-title">Management</h5>
-                <button class="btn btn-success" @onclick="() => SelectSoldier(soldier)">Select</button>
-                <button class="btn btn-danger" @onclick="() => { Console.WriteLine(soldier.name); DeleteSoldier(soldier); }">Delete Soldier</button>
+@if (session.LoggedInUser != null)
+{
+    <div id="soldier-container">
+        @foreach (Soldier soldier in session.LoggedInUser.soldiers)
+        {
+            <div class="soldier-element card mb-3">
+                <div class="card-body">
+                    <SoldierInfo soldier="@soldier"></SoldierInfo>
+                    <h5 class="card-title">Management</h5>
+                    <button class="btn btn-success" @onclick="() => SelectSoldier(soldier)">Select</button>
+                    <button class="btn btn-danger" @onclick="() => { Console.WriteLine(soldier.name); DeleteSoldier(soldier); }">Delete Soldier</button>
+                </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
+else
+{
+    <h1>You are not logged in!</h1>
+    <LoginWindow></LoginWindow>
+}
 
 @if (selectedSoldier != null)
 {
@@ -119,11 +106,6 @@
 }
     
 @code {
-    //TODO grab playerId from session
-    
-    //Session Variables
-    public int playerId = 1;
-    
     //UI Variables
     Soldier selectedSoldier = null;
     private bool classSelectionScreenOpen = false;
@@ -154,7 +136,7 @@
     
     private bool LevelUpSoldier(Soldier soldier)
     {
-        bool canLevel = true; //TODO add sensible checks
+        bool canLevel = soldier.GetLevelUpCost() > db.GetResourceByType(ResourceType.T1_MANA).amount;
         if (canLevel)
         {
             soldier.LevelUp();

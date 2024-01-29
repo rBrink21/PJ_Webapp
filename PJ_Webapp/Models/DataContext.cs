@@ -21,5 +21,10 @@ public class DataContext : DbContext
             .HasMany(s => s.skills)
             .WithOne(s => s.soldier)
             .HasForeignKey(s => s.soldierId);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.soldiers)
+            .WithOne(s => s.playerOwned)
+            .HasForeignKey(s => s.playerId);
     }
 }

@@ -2,79 +2,89 @@
 @using PJ_Webapp.Models
 @using PJ_Webapp.Data
 @using PJ_Webapp.Models.Enums
-@using System.Reflection.Metadata
 @inject DBServices db
+@inject UserService session
 @rendermode InteractiveServer
 
-<h3>Soldier Creation</h3>
-<h4>Soldier Basics</h4>
-<span>Soldier Name:</span> <input name="name" type="text" @bind="soldierName">
-<br/>
-<span>Race:</span> <select name="race" id="race" @bind="race">
-    @foreach (SoldierRace race in Enum.GetValues(typeof(SoldierRace)))
-    {
-        <option value="@race">@race.ToCustomString()</option>
-    }
-</select>
-<br>
-<span>Loyalty: </span> <select name="loyalty" id="loyalty" @bind="loyalty">
-    @foreach (Loyalty loyalty in Enum.GetValues(typeof(Loyalty)))
-    {
-        <option value="@loyalty">@loyalty.ToCustomString()</option>
-    }
-</select>
-<br>
-<div>
-    <h4>Starting Skill Section</h4>
-    
-    <div id="field-skills">
-         <span>Field Skill 1: </span> 
-         <select name="fSkill1" id="fSkill1" @bind="fSkill1">
-             
-             @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-             {
-                 if (fSkill.GetCategory() == "Field Skills")
-                 { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                 
-             }
-         </select>
-         
-            <span>Field Skill 2: </span> 
-            <select name="fSkill2" id="fSkill2" @bind="fSkill2">
-             @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-             {
-                 if (fSkill.GetCategory() == "Field Skills")
-                 { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-             }
-            </select>            
-    </div>
-    <br>
-        <div id="artisan-skills">
-             <span>Artisan Skill 1: </span> 
-             <select name="aSkill1" id="aSkill1" @bind="aSkill1">
-                 
-                 @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-                 {
-                     if (fSkill.GetCategory() == "Artisan Skills")
-                     { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                     
-                 }
-             </select>
-             
-                <span>Artisan Skill 2: </span> 
-                <select name="aSkill2" id="aSkill2" @bind="aSkill2">
-                 @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-                 {
-                     if (fSkill.GetCategory() == "Artisan Skills")
-                     { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                 }
-                </select>            
+@if (session.LoggedInUser != null)
+{
+    <div id="soldier-creation">
+        <h3>Soldier Creation</h3>
+        <div id="soldier-basics">
+            <h4>Soldier Basics</h4>
+            <span>Soldier Name:</span> <input name="name" type="text" @bind="soldierName">
+            <br/>
+            <span>Race:</span> <select name="race" id="race" @bind="race">
+                @foreach (SoldierRace race in Enum.GetValues(typeof(SoldierRace)))
+                {
+                    <option value="@race">@race.ToCustomString()</option>
+                }
+            </select>
+            <br>
+            <span>Loyalty: </span> <select name="loyalty" id="loyalty" @bind="loyalty">
+                @foreach (Loyalty loyalty in Enum.GetValues(typeof(Loyalty)))
+                {
+                    <option value="@loyalty">@loyalty.ToCustomString()</option>
+                }
+            </select>
+            <br>        
         </div>
+        <div id="skill-section">
+            <h4>Starting Skill Section</h4>
+            
+            <div id="field-skills">
+                 <span>Field Skill 1: </span> 
+                 <select name="fSkill1" id="fSkill1" @bind="fSkill1">
+                     
+                     @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                     {
+                         if (fSkill.GetCategory() == "Field Skills")
+                         { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                         
+                     }
+                 </select>
+                 
+                    <span>Field Skill 2: </span> 
+                    <select name="fSkill2" id="fSkill2" @bind="fSkill2">
+                     @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                     {
+                         if (fSkill.GetCategory() == "Field Skills")
+                         { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                     }
+                    </select>            
+            </div>
+            <br>
+                <div id="artisan-skills">
+                     <span>Artisan Skill 1: </span> 
+                     <select name="aSkill1" id="aSkill1" @bind="aSkill1">
+                         
+                         @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                         {
+                             if (fSkill.GetCategory() == "Artisan Skills")
+                             { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                             
+                         }
+                     </select>
+                     
+                        <span>Artisan Skill 2: </span> 
+                        <select name="aSkill2" id="aSkill2" @bind="aSkill2">
+                         @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                         {
+                             if (fSkill.GetCategory() == "Artisan Skills")
+                             { <option value="@fSkill">@fSkill.ToCustomString()</option> }
+                         }
+                        </select>            
+                </div>
 
-</div>
-
-<button @onclick="CreateSoldier">Save Soldier</button>
-
+        </div>
+        <button @onclick="CreateSoldier">Save Soldier</button>
+    </div>
+}
+else
+{
+    <h1>You are not logged in!</h1>
+    <LoginWindow></LoginWindow>
+}
 
 <div id="debug-section">
     <br>
@@ -100,10 +110,12 @@
 
 </div>
 @code {
+
     // Debug/Session info;
     int playerID; //TODO Grab player ID from login session
     Soldier lastSoldierMade = null;
     bool debug_mode;
+
     //Form binds
     string soldierName;
     SoldierRace race;
@@ -112,25 +124,28 @@
     SoldierSkill aSkill2;
     SoldierSkill fSkill1;
     SoldierSkill fSkill2;
-    
-    
+
+
     private void CreateSoldier()
     {
         bool formFilled = soldierName != null && playerID != null && aSkill1 != null && aSkill2 != null;
-        Console.WriteLine(formFilled);
         if (formFilled)
         {
-            Console.WriteLine("Form is filled!");
-            Soldier newSoldier = new Soldier(soldierName,race,loyalty);
+            Soldier newSoldier = new Soldier(soldierName, race, loyalty);
             InitializeSkills(newSoldier);
+            
+            newSoldier.playerId = session.LoggedInUser.userID;
+            session.LoggedInUser.soldiers.Add(newSoldier);
+            
             db.SaveData(newSoldier);
+            //Positive feedback to player regarding soldier creation
         }
         else
         {
-            Console.WriteLine("Form not filled");
+            //Dialogue box stating they need to fill the entire form out
         }
-        
-        
+
+
     }
 
     private void InitializeSkills(Soldier newSoldier)
@@ -138,13 +153,13 @@
         bool skillsNotNull = aSkill1 != null && aSkill2 != null && fSkill1 != null && fSkill2 != null;
         if (skillsNotNull)
         {
-            SoldierSkill[] skillsToConvert = [aSkill1,aSkill2,fSkill1,fSkill2];
+            SoldierSkill[] skillsToConvert = [aSkill1, aSkill2, fSkill1, fSkill2];
             foreach (SoldierSkill skillName in skillsToConvert)
             {
                 Skill skill = new Skill(skillName);
                 newSoldier.InitializeSkill(skill);
-                
+
             }
         }
-    } 
+    }
 }
