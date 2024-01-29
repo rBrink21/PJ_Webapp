@@ -8,7 +8,8 @@ public class Soldier
     [Key]
     public Guid soldierId { get; set; }
     public string name { get; set; }
-    public int playerId { get; set; }
+    public Guid playerId { get; set; }
+    public User playerOwned { get; set; }
     public List<Skill> skills { get; set; } 
     public SoldierClass soldierClass { get; set; } 
     public int level { get; set; } 

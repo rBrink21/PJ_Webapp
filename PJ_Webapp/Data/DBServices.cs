@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PJ_Webapp.Models;
+using ResourceType = PJ_Webapp.Models.Enums.ResourceType;
 
 namespace PJ_Webapp.Data;
 
@@ -30,6 +31,13 @@ public class DBServices
         dataContext.SaveChanges();
     }
 
+    public void SaveData(User user)
+    {
+        user.userID = Guid.NewGuid();
+        dataContext.users.Add(user);
+        dataContext.SaveChanges();
+    }
+
     public List<Resource> GetResources()
     {
         return dataContext.resources.ToList();
@@ -39,6 +47,28 @@ public class DBServices
         return dataContext.soldiers.Include(s => s.skills).ToList();
     }
 
+    public List<User> GetUsers()
+    {
+        return dataContext.users.Include(u => u.soldiers).ToList();
+    }
+
+    public User? GetUserByUsername(string username)
+    {
+        User? user = dataContext.users.FirstOrDefault(u => u.username == username);
+        return user;
+    }
+
+    public Resource GetResourceByType(ResourceType type)
+    {
+        Resource? result = dataContext.resources.AsEnumerable().FirstOrDefault(r => r.type == type);
+        return result;
+        //Not possible null reference return, all resources in the ENUM are populated at start of program.
+
+    }
+    public Resource? GetResourceByName(string name)
+    {
+        return dataContext.resources.AsEnumerable().FirstOrDefault(r => r.name == name);
+    }
     public void DeleteSoldier(Soldier soldier)
     {
         dataContext.soldiers.Remove(soldier);

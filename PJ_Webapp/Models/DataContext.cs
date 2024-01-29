@@ -12,6 +12,8 @@ public class DataContext : DbContext
     public DbSet<Skill> skills { get; set; }
     
     public DbSet<Resource> resources { get; set; }
+    
+    public DbSet<User> users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,5 +21,10 @@ public class DataContext : DbContext
             .HasMany(s => s.skills)
             .WithOne(s => s.soldier)
             .HasForeignKey(s => s.soldierId);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.soldiers)
+            .WithOne(s => s.playerOwned)
+            .HasForeignKey(s => s.playerId);
     }
 }
