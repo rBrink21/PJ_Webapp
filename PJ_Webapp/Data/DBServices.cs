@@ -42,9 +42,9 @@ public class DBServices
     {
         return dataContext.resources.ToList();
     }
-    public List<Soldier> GetSoldiers()
+    public List<Soldier> GetSoldiers(User user)
     {
-        return dataContext.soldiers.Include(s => s.skills).ToList();
+        return dataContext.soldiers.Include(s => s.skills).Where(s => s.playerId == user.userID).ToList();
     }
 
     public List<User> GetUsers()
@@ -55,10 +55,18 @@ public class DBServices
     public User? GetUserByUsername(string username)
     {
         User? user = dataContext.users.FirstOrDefault(u => u.username == username);
-        dataContext.users.Attach(user);
+        if (user != null)
+        {
+            dataContext.users.Attach(user);
+        }
+        
         return user;
     }
 
+    public User? GetUserById(Guid userId)
+    {
+        return dataContext.users.FirstOrDefault(u => u.userID == userId);
+    }
     public Resource GetResourceByType(ResourceType type)
     {
         Resource? result = dataContext.resources.FirstOrDefault(r => r.type == type);
@@ -67,7 +75,7 @@ public class DBServices
         //Not possible null reference return, all resources in the ENUM are populated at start of program.
 
     }
-   public Resource? GetResourceByName(string name)
+    public Resource? GetResourceByName(string name)
      {
          Resource? result = dataContext.resources.FirstOrDefault(r => r.name == name);
          if (result != null)
@@ -77,6 +85,7 @@ public class DBServices
 
          return result;
      }
+    
     public void DeleteSoldier(Soldier soldier)
     {
         dataContext.soldiers.Remove(soldier);
@@ -92,5 +101,10 @@ public class DBServices
     {
         dataContext.resources.Remove(resource);
         dataContext.SaveChanges();
+    }
+
+    public Soldier? GetSoldierById(Guid soldierId)
+    {
+        return dataContext.soldiers.FirstOrDefault(s => s.soldierId == soldierId);
     }
 }

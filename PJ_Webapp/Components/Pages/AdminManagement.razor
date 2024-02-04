@@ -17,21 +17,41 @@
     if (resourceScreen)
     {
         <div id="resourceManagement" class="info-panel">
-            <button class="exit-button"  @onclick="() => resourceScreen = false">X</button>
-            <span>Type: </span><select @bind="resourceName">
-                @foreach (Resource r in db.GetResources())
-                {
-                    <option value="@r.name">@r.name</option>
-                }
-            </select>
-            <span>Action:</span> <select @bind="action">
-                <option value="add">Add</option>
-                <option value="subtract">Subtract</option>
-                <option value="set">Set</option>
-                <option value="delete">Delete</option>
-            </select>
-            <span>Amount:</span> <input @bind="amount" type="number"/>
-            <button @onclick="() => {submitResourceButton();}">Submit</button>
+            <button class="exit-button" @onclick="() => {resourceScreen = false;}">X</button>
+            <AdminResourceScreen></AdminResourceScreen>
+        </div>
+    }
+
+    if (soldierScreen)
+    {
+        <div id="soldierManagement" class="info-panel">
+            <button class="exit-button" @onclick="() => {soldierScreen = false;}">X</button>
+            <span>User:</span>
+            <select @bind="selectedUserId">@foreach (User user in db.GetUsers())
+                    {
+                        <option value="@user.userID">@user.username</option>
+                    }</select>
+           @if (selectedUserId.HasValue)
+           {
+               List<Soldier> soldierList = db.GetUserById(selectedUserId.Value).soldiers;
+               <span>Soldier:</span>
+               <select @bind="selectedSoldierId">
+                   @foreach (Soldier soldier in soldierList)
+                   {
+                       <option value="@soldier.soldierId">@soldier.name</option>
+                   }
+               </select>
+           }
+            
+            @if (selectedSoldierId.HasValue)
+            {
+                <button @onclick="() => {soldierEditScreen = true;}">Edit</button>
+            }
+            
+            @if (soldierEditScreen && selectedSoldierId.HasValue)
+            {
+                <SoldierEditForm soldierId="selectedSoldierId.Value"></SoldierEditForm>
+            }
         </div>
     }
 }
@@ -41,61 +61,13 @@
     bool resourceScreen = false;
     bool soldierScreen = false;
     bool userScreen = false;
+    bool soldierEditScreen = false;
     bool debug = true;
-    
-    
-    // Form binds
-    string action;
-    string resourceName;
-    int amount;
-    
+    Guid? selectedSoldierId;
+    Guid? selectedUserId;
 
-    private void AddResources(string resourceName, int amount)
+    private void EditSoldier()
     {
-        Resource resource = db.GetResourceByName(resourceName);
-        resource.amount += amount;
-        db.SaveChanges();
+        soldierEditScreen = true;
     }
-
-    private void SubtractResources(string resourceName, int amount)
-    {
-        Resource resource = db.GetResourceByName(resourceName);
-        resource.amount -= amount;
-        db.SaveChanges();
-    }
-
-    private void SetResources(string resourceName, int amount)
-    {
-        Resource resource = db.GetResourceByName(resourceName);
-        resource.amount = amount;
-        db.SaveChanges();
-    }
-
-    private void DeleteResource(string resourceName)
-    {
-        Resource resource = db.GetResourceByName(resourceName);
-        db.Delete(resource);
-        db.SaveChanges();
-    }
-
-    private void submitResourceButton()
-    {
-        bool resourceFormFilled = action != null && resourceName != null && amount != null;
-
-        if (resourceFormFilled)
-        {
-            switch (action)
-            {
-                case "add" : AddResources(resourceName,amount);  break;
-                case "subtract" : SubtractResources(resourceName,amount); break;
-                case "set" : SetResources(resourceName,amount); break;
-                case "delete" : DeleteResource(resourceName); break;
-                
-                default: Console.WriteLine("something went wrong AdminManagement.razor");  break;
-               
-            }
-        }
-
-    }
-
 }

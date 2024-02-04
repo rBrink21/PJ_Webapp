@@ -12,8 +12,8 @@ public class User
     public byte[] hashedPassword { get; set; }
     public byte[] salt { get; set; }
     public bool isAdmin { get; set; }
-    
-    public List<Soldier> soldiers { get; set; }
+
+    public List<Soldier> soldiers { get; set; } = new List<Soldier>();
 
     public User()
     {

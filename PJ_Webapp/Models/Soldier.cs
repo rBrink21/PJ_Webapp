@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using PJ_Webapp.Data;
 using PJ_Webapp.Models.Enums;
 namespace PJ_Webapp.Models;
 
@@ -49,6 +50,7 @@ public class Soldier
         mental = DEFAULT_MENTAL;
 
         characterSheetLink = " ";
+        
     }
 
     public void UpgradeSkill(Skill skillToUpgrade)
@@ -78,15 +80,11 @@ public class Soldier
         }
         skills.Add(newSkill);
     }
-    public bool LevelUp()
+    public void LevelUp()
     {
-        bool canLevelUp = true; //TODO add logic check w resourcemanager
-        
-        if (canLevelUp)
+        level += 1;
+        switch (level)
         {
-            level += 1;
-            switch (level)
-            {
                 case 1:
                 {
                     roleAvailableForAssignment = true;
@@ -98,14 +96,19 @@ public class Soldier
                     break;
                 }
                 //TODO Expand case structure
-            }
         }
-
-        return canLevelUp;
     }
     public int GetLevelUpCost()
     {
-        return levelUpCosts[level];
+        if (level >= levelUpCosts.Length)
+        {
+            return int.MaxValue;
+        }
+        else
+        {
+            return levelUpCosts[level];
+        }
+        
     }
     public void AssignClass(SoldierClass role){
         this.soldierClass = role;

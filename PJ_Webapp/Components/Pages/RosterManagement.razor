@@ -10,7 +10,7 @@
 @if (session.LoggedInUser != null)
 {
     <div id="soldier-container">
-        @foreach (Soldier soldier in session.LoggedInUser.soldiers)
+        @foreach (Soldier soldier in db.GetSoldiers(session.LoggedInUser))
         {
             <div class="soldier-element card mb-3">
                 <div class="card-body">
@@ -136,9 +136,12 @@ else
     
     private bool LevelUpSoldier(Soldier soldier)
     {
-        bool canLevel = soldier.GetLevelUpCost() > db.GetResourceByType(ResourceType.T1_MANA).amount;
+        Resource mana_stones = db.GetResourceByType(ResourceType.T1_MANA); // TODO just t1 mana stones for now
+        bool canLevel = soldier.GetLevelUpCost() <= mana_stones.amount ;
+        
         if (canLevel)
         {
+            mana_stones.amount -= soldier.GetLevelUpCost();
             soldier.LevelUp();
         }
 

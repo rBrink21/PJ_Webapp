@@ -85,7 +85,6 @@ else
         if (ValidateUsername(usernameCreate) & ValidatePassword(passwordCreate))
         {
             User user = new User(usernameCreate, passwordCreate);
-            user.isAdmin = true;
             db.SaveData(user);
             DialogueBox("User Created!");
         }

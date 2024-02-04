@@ -1,0 +1,97 @@
+@using PJ_Webapp.Models
+       @using PJ_Webapp.Models.Enums
+       @using PJ_Webapp.Data
+       @inject DBServices db
+       <div id="soldier-form">
+           <EditForm Model="@soldier">
+               <DataAnnotationsValidator />
+               <ValidationSummary />
+       
+               <label for="name">Name:</label>
+               <InputText id="name" @bind-Value="@soldier.name" />
+               <br/>
+               <label for="soldierClass">Soldier Class:</label>
+               <InputSelect id="soldierClass" @bind-Value="@soldier.soldierClass">
+                   <option value="">--- select ---</option>
+                   @foreach (var soldierClass in Enum.GetValues<SoldierClass>())
+                   {
+                       <option value="@soldierClass">@soldierClass</option>
+                   }
+               </InputSelect>
+               <br/>
+               <label for="level">Level:</label>
+               <InputNumber id="level" @bind-Value="@soldier.level" />
+               <br/>
+               <label for="currentHealth">Current Health:</label>
+               <InputNumber id="currentHealth" @bind-Value="@soldier.currentHealth" />
+               <br/>
+               <label for="maxHealth">Max Health:</label>
+               <InputNumber id="maxHealth" @bind-Value="@soldier.maxHealth" />
+               <br/>
+               <label for="mental">Mental:</label>
+               <InputNumber id="mental" @bind-Value="@soldier.mental" />
+               <br/>
+               <label for="soldierRace">Soldier Race:</label>
+               <InputSelect id="soldierRace" @bind-Value="@soldier.soldierRace">
+                   <option value="">--- select ---</option>
+                   @foreach (var soldierRace in Enum.GetValues<SoldierRace>())
+                   {
+                       <option value="@soldierRace">@soldierRace</option>
+                   }
+               </InputSelect>
+               <br/>
+               
+               <label for="availableSkillPoints">Available Skill Points:</label>
+               <InputNumber id="availableSkillPoints" @bind-Value="@soldier.availableSkillPoints" />
+               <br/>
+               <label for="loyalty">Loyalty:</label>
+               <InputSelect id="loyalty" @bind-Value="@soldier.loyalty">
+                   <option value="">--- select ---</option>
+                   @foreach (var loyalty in Enum.GetValues<Loyalty>())
+                   {
+                       <option value="@loyalty">@loyalty</option>
+                   }
+               </InputSelect>
+               <label for="healthStatus">Health Status:</label>
+               <InputSelect id="healthStatus" @bind-Value="@soldier.healthStatus">
+                   <option value="">--- select ---</option>
+                   @foreach (var healthStatus in Enum.GetValues<SoldierHealthStatus>())
+                   {
+                       <option value="@healthStatus">@healthStatus</option>
+                   }
+               </InputSelect>
+               <br/>
+               <label for="roleAvailable">Role Available for Assignment:</label>
+               <InputCheckbox id="roleAvailable" @bind-Value="@soldier.roleAvailableForAssignment" />
+                <label for="characterSheetLink">Character Sheet Link:</label>
+                <InputText id="characterSheetLink" @bind-Value="@soldier.characterSheetLink" />
+               <br/>
+               <button @onclick="(() => EditSkills(soldier))">Edit Skills</button> 
+               <button @onclick="SaveSoldier" type="submit">Save</button>
+           </EditForm>
+       </div>
+       
+       @code {
+           [Parameter] public Guid soldierId { get; set; }
+           private Soldier? soldier;
+       
+           protected override void OnParametersSet()
+           {
+               soldier = db.GetSoldierById(soldierId);
+           }
+       
+           private void SaveSoldier()
+           {
+               db.SaveChanges();
+           }
+           
+           private void EditSkills(Soldier soldier)
+           {
+               //TODO IMPLEMENT EDIT SKILLS
+           }
+
+           private void ReassignUser(Soldier soldier)
+           {
+               //TODO Implement Reassign User
+           }
+       }
