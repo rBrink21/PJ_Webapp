@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="site.css">
 @if (session.LoggedInUser is { isAdmin: true } || debug)
 {
+    //This screen honestly blows, i need to rework the whole thing at some point
     <h3>Admin</h3>
     <button @onclick="() => {resourceScreen = true; }">Resource Management</button>
     <button @onclick="() => {soldierScreen = true; }">Soldier Management</button>
@@ -26,13 +27,19 @@
     {
         <div id="soldierManagement" class="info-panel">
             <button class="exit-button" @onclick="() => {soldierScreen = false;}">X</button>
+            
             <span>User:</span>
-            <select @bind="selectedUserId">@foreach (User user in db.GetUsers())
-                    {
-                        <option value="@user.userID">@user.username</option>
-                    }</select>
-           @if (selectedUserId.HasValue)
+            <select @bind="selectedUserId">
+                @foreach (User user in db.GetUsers())
+                {
+                    <option value="@user.userID">@user.username</option>
+                }
+            </select>
+            
+            
+            @if (selectedUserId.HasValue)
            {
+               //User Dropdown
                List<Soldier> soldierList = db.GetUserById(selectedUserId.Value).soldiers;
                <span>Soldier:</span>
                <select @bind="selectedSoldierId">
@@ -52,6 +59,9 @@
             {
                 <SoldierEditForm soldierId="selectedSoldierId.Value"></SoldierEditForm>
             }
+            
+            
+            
         </div>
     }
 }

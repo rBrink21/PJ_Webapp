@@ -17,6 +17,19 @@
         <button @onclick="() => {createUserPanel = true;}">Create new user</button>
     </div>
     
+    <button @onclick="() => {resetPasswordPanel = true;}"> Reset Password?</button>
+
+    if (resetPasswordPanel)
+    {
+        <div id="reset-password-panel">
+            <span>Username:</span> <input type="text" @bind="resetUsername"/>
+            @if (db.GetUserByUsername(resetUsername) != null && db.GetUserByUsername(resetUsername)!.resetPassword)
+            {
+                <span>Enter new password:</span> <input type="text" @bind="resetNewPass"/>
+                <button @onclick="() => {db.GetUserByUsername(resetUsername)!.SetNewPassword(resetNewPass);}">Submit</button>
+            }
+        </div>
+    }
 }
 else
 {
@@ -56,9 +69,12 @@ else
 
     // UI 
     bool dialogueBoxOpen = false;
-    string dialogueText;
+    string dialogueText = "";
     bool createUserPanel = false;
-
+    bool resetPasswordPanel = false;
+    string resetUsername = "";
+    string resetNewPass = "";
+    
     private void Login()
     {
         User? userAttemptedLogin = db.GetUserByUsername(usernameLogin);

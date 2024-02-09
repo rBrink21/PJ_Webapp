@@ -80,6 +80,21 @@ public class Soldier
         }
         skills.Add(newSkill);
     }
+
+    public void InitializeSkill(SoldierSkill newSkill)
+    {
+        foreach (Skill skill in skills)
+        {
+            if (skill.name == newSkill)
+            {
+                skill.level += 1;
+                return;
+            }
+        }
+
+        Skill s = new Skill(newSkill);
+        skills.Add(s);
+    }
     public void LevelUp()
     {
         level += 1;

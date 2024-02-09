@@ -13,6 +13,7 @@ public class User
     public byte[] salt { get; set; }
     public bool isAdmin { get; set; }
 
+    public bool resetPassword { get; set; }
     public List<Soldier> soldiers { get; set; } = new List<Soldier>();
 
     public User()
@@ -48,5 +49,10 @@ public class User
     {
         byte[] hashedEnteredPassword = HashPassword(plainTextPassword);
         return hashedEnteredPassword.SequenceEqual(hashedPassword);
+    }
+
+    public void SetNewPassword(string plainTextPassword)
+    {
+        hashedPassword = HashPassword(plainTextPassword);
     }
 }

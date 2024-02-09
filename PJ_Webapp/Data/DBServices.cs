@@ -47,9 +47,16 @@ public class DBServices
         return dataContext.soldiers.Include(s => s.skills).Where(s => s.playerId == user.userID).ToList();
     }
 
+    public Skill? GetSkillById(Guid skillId)
+    {
+        return dataContext.skills.FirstOrDefault(s => s.skillId == skillId);
+    }
     public List<User> GetUsers()
     {
-        return dataContext.users.Include(u => u.soldiers).ToList();
+        //TODO wastefull call to db, create more specific methods to access more limited data.
+        return dataContext.users.Include(u => u.soldiers)
+            .ThenInclude(s => s.skills)
+            .ToList();
     }
 
     public User? GetUserByUsername(string username)
@@ -100,6 +107,12 @@ public class DBServices
     public void Delete(Resource resource)
     {
         dataContext.resources.Remove(resource);
+        dataContext.SaveChanges();
+    }
+
+    public void Delete(Skill skill)
+    {
+        dataContext.skills.Remove(skill);
         dataContext.SaveChanges();
     }
 
