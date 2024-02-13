@@ -3,106 +3,92 @@
 <PageTitle>Home</PageTitle>
 @using PJ_Webapp.Models
 @using PJ_Webapp.Data
+@using Microsoft.IdentityModel.Tokens
 @inject DBServices db
 @inject UserService session
-
-<link rel="stylesheet" href="site.css"/>
-@if (session.LoggedInUser == null)
-{
-    <div id="login" class="info-panel">
-        <span>Username: </span><input type="text" @bind="usernameLogin"/>
-        <br/>
-        <span>Password: </span><input type="password" @bind="passwordLogin"/>
-        <button @onclick="Login">Log in!</button>
-        <button @onclick="() => {createUserPanel = true;}">Create new user</button>
-    </div>
-    
-    <button @onclick="() => {resetPasswordPanel = true;}"> Reset Password?</button>
-
-    if (resetPasswordPanel)
+<form class="container-sm">
+    @if (session.LoggedInUser == null)
     {
-        <div id="reset-password-panel">
-            <span>Username:</span> <input type="text" @bind="resetUsername"/>
-            @if (db.GetUserByUsername(resetUsername) != null && db.GetUserByUsername(resetUsername)!.resetPassword)
-            {
-                <span>Enter new password:</span> <input type="text" @bind="resetNewPass"/>
-                <button @onclick="() => {db.GetUserByUsername(resetUsername)!.SetNewPassword(resetNewPass);}">Submit</button>
-            }
+        <h1>Login</h1>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input @bind="usernameLogin" type="text" class="form-control" id="username"/>
         </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input @bind="passwordLogin" class="form-control" type="password" id="password">
+        </div>
+        <button @onclick="Login" type="button" class="btn btn-outline-primary">Log in</button>
+        <button @onclick="CreateUser" type="button" class="btn btn-outline-secondary">Create Account</button>
     }
-}
-else
-{
-    <h3>Logged in! You're all good to continue!</h3>
-    <button @onclick="() => {session.LoggedInUser = null; StateHasChanged();}">Log out!</button>
-}
 
-@if (createUserPanel)
-{
-    <div class="info-panel" id="create-user-panel">
-        <button class="exit-button"@onclick="() => {createUserPanel = false;}">X</button>
-        <span>Username: </span><input type="text" @bind="usernameCreate"/>
-        <br/>
-        <span>Password: </span><input type="password" @bind="passwordCreate"/>
-        <button @onclick="CreateUser">Create User</button>
-    </div>
-}
-
-@if (dialogueBoxOpen) 
-{
-    <div class="popup" id="new-resource-menu-result">
-        <p>@dialogueText</p>
-        <button @onclick="() => {dialogueBoxOpen = false; }">Close</button>
-    </div>
+    @if (!string.IsNullOrWhiteSpace(operationResultText))
+        {
+            @if (operationSuccessfull)
+            {
+                <div class="alert alert-success">
+                    @operationResultText
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    @operationResultText
+                </div>
+            }
+        }
     
-}
+    
+    
+</form>
+
 
 @code
 {
     // User Login
     string? usernameLogin;
     string? passwordLogin;
-    
-    // User Creation
-    string? usernameCreate;
-    string? passwordCreate;
 
     // UI 
-    bool dialogueBoxOpen = false;
-    string dialogueText = "";
-    bool createUserPanel = false;
-    bool resetPasswordPanel = false;
-    string resetUsername = "";
-    string resetNewPass = "";
-    
+    bool operationSuccessfull;
+    string operationResultText;
+
+    protected override void OnInitialized()
+    {
+        session.OnChange += StateHasChanged;
+    }
+
     private void Login()
     {
         User? userAttemptedLogin = db.GetUserByUsername(usernameLogin);
         if (userAttemptedLogin == null)
         {
-            DialogueBox("No user found with that username!");
+            DialogueBox("No user found with that username!",false);
+            
             return;
         }
 
         if (userAttemptedLogin.IsCorrectPassword(passwordLogin))
         {
             session.LoggedInUser = userAttemptedLogin;
-            DialogueBox("Successful login!");
+            DialogueBox("Successful login!",true);
+            session.UserChanged();
+            StateHasChanged();
         }
         else
         {
-            DialogueBox("Wrong password!");
+            DialogueBox("Wrong password!",false);
         }
         
     }
     
     private void CreateUser()
     {
-        if (ValidateUsername(usernameCreate) & ValidatePassword(passwordCreate))
+        if (ValidateUsername(usernameLogin) & ValidatePassword(passwordLogin))
         {
-            User user = new User(usernameCreate, passwordCreate);
+            User user = new User(usernameLogin, passwordLogin);
             db.SaveData(user);
-            DialogueBox("User Created!");
+            DialogueBox("User Created!",true);
         }
    
     }
@@ -111,26 +97,26 @@ else
     {
         if (username == null)
         {
-            DialogueBox("Username cannot be empty!");
+            DialogueBox("Username cannot be empty!",false);
             return false;
         }
         if (username.Length < 1)
         {
-            DialogueBox("Username too short!");
+            DialogueBox("Username too short!",false);
             
             return false;
         }
 
         if (username.Length > 20)
         {
-            DialogueBox("Username too long!");
+            DialogueBox("Username too long!",false);
             
             return false;
         }
 
         if (db.GetUserByUsername(username) != null)
         {
-            DialogueBox("User already exists! Try logging in instead!");
+            DialogueBox("User already exists! Try logging in instead!",false);
             return false;
         }
 
@@ -142,27 +128,27 @@ else
         bool validPassword = true;
         if (password == null)
         {
-            DialogueBox("Password cannot be empty!");
+            DialogueBox("Password cannot be empty!",false);
             return false;
         }
         if (password.Length < 5)
         {
-            DialogueBox("Password too short!");
+            DialogueBox("Password too short!",false);
             validPassword = false;
         }
 
         if (password.Length > 15)
         {
-            DialogueBox("Password too long!");
+            DialogueBox("Password too long!",false);
             validPassword = false;
         }
 
         return validPassword;
     }
-    
-    private void DialogueBox(string message)
+
+    private void DialogueBox(string resultText, bool _operationSuccessfull)
     {
-        this.dialogueText = message;
-        dialogueBoxOpen = true;
+        operationResultText = resultText;
+        this.operationSuccessfull = _operationSuccessfull;
     }
 }

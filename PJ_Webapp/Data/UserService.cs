@@ -9,6 +9,12 @@ public class UserService
     {
         
     }
-    
-    
+
+    public event Action OnChange;
+
+    public void UserChanged()
+    {
+        OnChange?.Invoke();
+    }
+
 }

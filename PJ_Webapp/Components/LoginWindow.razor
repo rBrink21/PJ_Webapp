@@ -3,21 +3,17 @@
 @inject DBServices db
 @inject UserService session
 
-<link rel="stylesheet" href="site.css"/>
+
 @if (session.LoggedInUser == null)
 {
-    <div id="login" class="info-panel">
         <span>Username: </span><input type="text" @bind="usernameLogin"/>
-        <br/>
         <span>Password: </span><input type="password" @bind="passwordLogin"/>
         <button @onclick="Login">Log in!</button>
         <button @onclick="() => {createUserPanel = true;}">Create new user</button>
-    </div>
     
 }
 else
 {
-    <h3>Logged in! You're all good to continue!</h3>
     <button @onclick="() => {session.LoggedInUser = null;}">Log out!</button>
 }
 
@@ -69,6 +65,7 @@ else
         {
             session.LoggedInUser = userAttemptedLogin;
             DialogueBox("Successful login!");
+            session.UserChanged();
             StateHasChanged();
         }
         else
