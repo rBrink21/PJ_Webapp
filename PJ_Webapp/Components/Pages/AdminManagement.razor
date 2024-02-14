@@ -52,7 +52,7 @@
             
             @if (selectedSoldierId.HasValue)
             {
-                <button @onclick="() => {soldierEditScreen = true;}">Edit</button>
+                <button class="btn btn-primary"@onclick="() => {soldierEditScreen = true;}">Edit</button>
             }
             
             @if (soldierEditScreen && selectedSoldierId.HasValue)

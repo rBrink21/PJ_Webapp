@@ -6,78 +6,102 @@
 @inject UserService session
 @rendermode InteractiveServer
 
-@if (session.LoggedInUser != null)
+@if (session.LoggedInUser != null || debug_mode)
 {
-    <div id="soldier-creation">
-        <h3>Soldier Creation</h3>
-        <div id="soldier-basics">
-            <h4>Soldier Basics</h4>
-            <span>Soldier Name:</span> <input name="name" type="text" @bind="soldierName">
-            <br/>
-            <span>Race:</span> <select name="race" id="race" @bind="race">
-                @foreach (SoldierRace race in Enum.GetValues(typeof(SoldierRace)))
-                {
-                    <option value="@race">@race.ToCustomString()</option>
-                }
-            </select>
-            <br>
-            <span>Loyalty: </span> <select name="loyalty" id="loyalty" @bind="loyalty">
-                @foreach (Loyalty loyalty in Enum.GetValues(typeof(Loyalty)))
-                {
-                    <option value="@loyalty">@loyalty.ToCustomString()</option>
-                }
-            </select>
-            <br>        
-        </div>
-        <div id="skill-section">
-            <h4>Starting Skill Section</h4>
-            
-            <div id="field-skills">
-                 <span>Field Skill 1: </span> 
-                 <select name="fSkill1" id="fSkill1" @bind="fSkill1">
-                     
-                     @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-                     {
-                         if (fSkill.GetCategory() == "Field Skills")
-                         { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                         
-                     }
-                 </select>
-                 
-                    <span>Field Skill 2: </span> 
-                    <select name="fSkill2" id="fSkill2" @bind="fSkill2">
-                     @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-                     {
-                         if (fSkill.GetCategory() == "Field Skills")
-                         { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                     }
-                    </select>            
+    <div class="container w-50 bg-body-tertiary bg-opacity-75">
+        <form class="p-2 rounded-4 d-flex flex-column">
+            <h3>Soldier Recruitment</h3>
+            <div class="form-floating mb-3 row">
+                <input class="form-control" placeholder="Soldier Name" id="name" name="name" type="text" @bind="soldierName">
+                <label for="name">Soldier Name</label>
             </div>
-            <br>
-                <div id="artisan-skills">
-                     <span>Artisan Skill 1: </span> 
-                     <select name="aSkill1" id="aSkill1" @bind="aSkill1">
-                         
-                         @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-                         {
-                             if (fSkill.GetCategory() == "Artisan Skills")
-                             { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                             
-                         }
-                     </select>
-                     
-                        <span>Artisan Skill 2: </span> 
-                        <select name="aSkill2" id="aSkill2" @bind="aSkill2">
-                         @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
-                         {
-                             if (fSkill.GetCategory() == "Artisan Skills")
-                             { <option value="@fSkill">@fSkill.ToCustomString()</option> }
-                         }
-                        </select>            
-                </div>
 
-        </div>
-        <button @onclick="CreateSoldier">Save Soldier</button>
+            <div class="mb-3 row">
+                <div class="form-floating col ps-0">
+                    <select class="form-select" id="race" @bind="race">
+                        <option selected>Select Race</option>
+                        @foreach (SoldierRace race in Enum.GetValues(typeof(SoldierRace)))
+                        {
+                            <option value="@race">@race.ToCustomString()</option>
+                        }
+                    </select>
+                    <label for="race">Race</label>
+                </div>
+                <div class="form-floating col pe-0">
+                    <select class="form-select" id="loyalty" @bind="loyalty">
+                        <option selected>Loyalty</option>
+                        @foreach (Loyalty loyalty in Enum.GetValues(typeof(Loyalty)))
+                        {
+                            <option value="@loyalty">@loyalty.ToCustomString()</option>
+                        }
+                    </select>
+                    <label style="left: auto" for="loyalty">Loyalty</label>
+                </div>
+            </div>
+
+            <div class="mb-3 mt-3 row">
+                <h3>Field Skills</h3>
+                <div class="form-floating col ps-0">
+                    <select class="form-select" name="fSkill1" id="fSkill1" @bind="fSkill1">
+                        <option selected>Field Skill 1</option>
+                        @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                        {
+                            if (fSkill.GetCategory() == "Field Skills")
+                            {
+                                <option value="@fSkill">@fSkill.ToCustomString()</option>
+                            }
+
+                        }
+                    </select>
+                    <label style="left:auto" for="fSkill1">Field Skill 1</label>
+                </div>
+                <div class="form-floating col pe-0">
+                    <select class="form-select" name="fSkill2" id="fSkill2" @bind="fSkill2">
+                        <option selected>Field Skill 2</option>
+                        @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                        {
+                            if (fSkill.GetCategory() == "Field Skills")
+                            {
+                                <option value="@fSkill">@fSkill.ToCustomString()</option>
+                            }
+
+                        }
+                    </select>
+                    <label style="left:auto" for="fSkill1">Field Skill 2</label>
+                </div>
+            </div>
+            
+            <div class="row">
+                <h3>Artisan Skills</h3>
+                <div class="col form-floating ps-0">
+                    <select class="form-select" name="aSkill1" id="aSkill1" @bind="aSkill1">
+                        <option selected>Artisan Skill 1</option>
+                        @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                        {
+                            if (fSkill.GetCategory() == "Artisan Skills")
+                            {
+                                <option value="@fSkill">@fSkill.ToCustomString()</option>
+                            }
+                        }
+                    </select>
+                    <label style="left:auto" for="aSkill1">Artisan Skill 1</label>
+                </div>
+                <div class="col form-floating pe-0">
+                    <select class="form-select" name="aSkill2" id="aSkill2" @bind="aSkill2">
+                        <option selected>Artisan Skill 2</option>
+                        @foreach (SoldierSkill fSkill in Enum.GetValues(typeof(SoldierSkill)))
+                        {
+                            if (fSkill.GetCategory() == "Artisan Skills")
+                            {
+                                <option value="@fSkill">@fSkill.ToCustomString()</option>
+                            }
+                        }
+                    </select>
+                    <label style="left:auto" for="aSkill1">Artisan Skill 2</label>
+                </div>
+            </div>
+            <button class="mt-3 align-self-center btn w-50 btn-primary"@onclick="CreateSoldier">Save Soldier</button>
+        </form>
     </div>
 }
 else
