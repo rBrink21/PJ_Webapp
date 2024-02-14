@@ -100,14 +100,17 @@
                     <label style="left:auto" for="aSkill1">Artisan Skill 2</label>
                 </div>
             </div>
-            <button class="mt-3 align-self-center btn w-50 btn-primary"@onclick="CreateSoldier">Save Soldier</button>
+            <button type="button" class="mt-3 align-self-center btn w-50 btn-primary"@onclick="CreateSoldier">Save Soldier</button>
         </form>
     </div>
 }
 else
 {
     <h1>You are not logged in!</h1>
-    <LoginWindow></LoginWindow>
+    <NavLink href="/">
+        <button class="btn btn-danger" href="/">To Login Page</button>
+    </NavLink>
+    
 }
 
 <div id="debug-section">

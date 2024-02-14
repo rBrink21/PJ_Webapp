@@ -32,4 +32,15 @@ public static class SoldierHealthStatusExtensions
             _ => "Oops health status unknown!"
         };
     }
+
+    public static string ToBadge(this SoldierHealthStatus health)
+    {
+        return health switch
+        {
+            SoldierHealthStatus.HEALTHY => "badge text-bg-success",
+            SoldierHealthStatus.DEAD => "badge text-bg-danger",
+            SoldierHealthStatus.LOST => "badge text-bg-danger",
+            _ => "badge text-bg-warning"
+        };
+    }
 }

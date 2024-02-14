@@ -1,82 +1,83 @@
+@using PJ_Webapp.Models.Enums
+@using PJ_Webapp.Data
 @using PJ_Webapp.Models
-       @using PJ_Webapp.Models.Enums
-       @using PJ_Webapp.Data
-       @inject DBServices db
-       <div id="soldier-form">
-           <h3>Soldier Edit</h3>
-           <EditForm Model="@selectedSoldier">
-               <DataAnnotationsValidator/>
-               <ValidationSummary/>
-               <div>
+@inject DBServices db
 
-               </div>
-               <div>
-                   <label for="name">Name:</label>
-                   <InputText id="name" @bind-Value="@selectedSoldier.name"/>
-                   <br/>
-                   <label for="soldierClass">Soldier Class:</label>
-                   <InputSelect id="soldierClass" @bind-Value="@selectedSoldier.soldierClass">
-                       <option value="">--- select ---</option>
-                       @foreach (var soldierClass in Enum.GetValues<SoldierClass>())
-                       {
-                           <option value="@soldierClass">@soldierClass</option>
-                       }
-                   </InputSelect>
-                   <br/>
-               </div>
+<div id="soldier-form">
+    <h3>Soldier Edit</h3>
+    <EditForm Model="@selectedSoldier">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div>
 
-               <label for="level">Level:</label>
-               <InputNumber id="level" @bind-Value="@selectedSoldier.level"/>
-               <br/>
-               <label for="currentHealth">Current Health:</label>
-               <InputNumber id="currentHealth" @bind-Value="@selectedSoldier.currentHealth"/>
-               <br/>
-               <label for="maxHealth">Max Health:</label>
-               <InputNumber id="maxHealth" @bind-Value="@selectedSoldier.maxHealth"/>
-               <br/>
-               <label for="mental">Mental:</label>
-               <InputNumber id="mental" @bind-Value="@selectedSoldier.mental"/>
-               <br/>
-               <label for="soldierRace">Soldier Race:</label>
-               <InputSelect id="soldierRace" @bind-Value="@selectedSoldier.soldierRace">
-                   <option value="">--- select ---</option>
-                   @foreach (var soldierRace in Enum.GetValues<SoldierRace>())
-                   {
-                       <option value="@soldierRace">@soldierRace</option>
-                   }
-               </InputSelect>
-               <br/>
+        </div>
+        <div>
+            <label for="name">Name:</label>
+            <InputText id="name" @bind-Value="@selectedSoldier.name"/>
+            <br/>
+            <label for="soldierClass">Soldier Class:</label>
+            <InputSelect id="soldierClass" @bind-Value="@selectedSoldier.soldierClass">
+                <option value="">--- select ---</option>
+                @foreach (var soldierClass in Enum.GetValues<SoldierClass>())
+                {
+                    <option value="@soldierClass">@soldierClass</option>
+                }
+            </InputSelect>
+            <br/>
+        </div>
 
-               <label for="availableSkillPoints">Available Skill Points:</label>
-               <InputNumber id="availableSkillPoints" @bind-Value="@selectedSoldier.availableSkillPoints"/>
-               <br/>
-               <label for="loyalty">Loyalty:</label>
-               <InputSelect id="loyalty" @bind-Value="@selectedSoldier.loyalty">
-                   <option value="">--- select ---</option>
-                   @foreach (var loyalty in Enum.GetValues<Loyalty>())
-                   {
-                       <option value="@loyalty">@loyalty</option>
-                   }
-               </InputSelect>
-               <label for="healthStatus">Health Status:</label>
-               <InputSelect id="healthStatus" @bind-Value="@selectedSoldier.healthStatus">
-                   <option value="">--- select ---</option>
-                   @foreach (var healthStatus in Enum.GetValues<SoldierHealthStatus>())
-                   {
-                       <option value="@healthStatus">@healthStatus</option>
-                   }
-               </InputSelect>
-               <br/>
-               <label for="roleAvailable">Role Available for Assignment:</label>
-               <InputCheckbox id="roleAvailable" @bind-Value="@selectedSoldier.roleAvailableForAssignment"/>
-               <label for="characterSheetLink">Character Sheet Link:</label>
-               <InputText id="characterSheetLink" @bind-Value="@selectedSoldier.characterSheetLink"/>
-               <br/>
-               <button @onclick="() => { if (selectedSoldier != null) OpenEditSkillMenu(selectedSoldier); }">Edit Skills</button>
-               <button @onclick="SaveSoldier" type="submit">Save</button>
-               <button @onclick="OpenReassignUser">Reassign to user</button>
-           </EditForm>
-       </div>
+        <label for="level">Level:</label>
+        <InputNumber id="level" @bind-Value="@selectedSoldier.level"/>
+        <br/>
+        <label for="currentHealth">Current Health:</label>
+        <InputNumber id="currentHealth" @bind-Value="@selectedSoldier.currentHealth"/>
+        <br/>
+        <label for="maxHealth">Max Health:</label>
+        <InputNumber id="maxHealth" @bind-Value="@selectedSoldier.maxHealth"/>
+        <br/>
+        <label for="mental">Mental:</label>
+        <InputNumber id="mental" @bind-Value="@selectedSoldier.mental"/>
+        <br/>
+        <label for="soldierRace">Soldier Race:</label>
+        <InputSelect id="soldierRace" @bind-Value="@selectedSoldier.soldierRace">
+            <option value="">--- select ---</option>
+            @foreach (var soldierRace in Enum.GetValues<SoldierRace>())
+            {
+                <option value="@soldierRace">@soldierRace</option>
+            }
+        </InputSelect>
+        <br/>
+
+        <label for="availableSkillPoints">Available Skill Points:</label>
+        <InputNumber id="availableSkillPoints" @bind-Value="@selectedSoldier.availableSkillPoints"/>
+        <br/>
+        <label for="loyalty">Loyalty:</label>
+        <InputSelect id="loyalty" @bind-Value="@selectedSoldier.loyalty">
+            <option value="">--- select ---</option>
+            @foreach (var loyalty in Enum.GetValues<Loyalty>())
+            {
+                <option value="@loyalty">@loyalty</option>
+            }
+        </InputSelect>
+        <label for="healthStatus">Health Status:</label>
+        <InputSelect id="healthStatus" @bind-Value="@selectedSoldier.healthStatus">
+            <option value="">--- select ---</option>
+            @foreach (var healthStatus in Enum.GetValues<SoldierHealthStatus>())
+            {
+                <option value="@healthStatus">@healthStatus</option>
+            }
+        </InputSelect>
+        <br/>
+        <label for="roleAvailable">Role Available for Assignment:</label>
+        <InputCheckbox id="roleAvailable" @bind-Value="@selectedSoldier.roleAvailableForAssignment"/>
+        <label for="characterSheetLink">Character Sheet Link:</label>
+        <InputText id="characterSheetLink" @bind-Value="@selectedSoldier.characterSheetLink"/>
+        <br/>
+        <button @onclick="() => { if (selectedSoldier != null) OpenEditSkillMenu(selectedSoldier); }">Edit Skills</button>
+        <button @onclick="SaveSoldier" type="submit">Save</button>
+        <button @onclick="OpenReassignUser">Reassign to user</button>
+    </EditForm>
+</div>
        @if (skillEditMenu)
        {
            
@@ -127,7 +128,7 @@
        @code {
            //Globals
            [Parameter] public Guid soldierId { get; set; }
-           private Soldier? selectedSoldier;
+           private Models.Soldier? selectedSoldier;
            
            //Skill Menu
            private Guid selectedSkillGuid;
@@ -151,7 +152,7 @@
                db.SaveChanges();
            }
            
-            private void OpenEditSkillMenu(Soldier soldier)
+            private void OpenEditSkillMenu(Models.Soldier soldier)
             {
                 if(soldier is null) throw new ArgumentNullException(nameof(soldier));
                 skillEditMenu = !skillEditMenu;

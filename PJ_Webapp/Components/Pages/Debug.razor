@@ -1,0 +1,36 @@
+@page "/Debug"
+@using PJ_Webapp.Data
+@using PJ_Webapp.Models
+@using PJ_Webapp.Models.Enums
+@using PJ_Webapp.Components.Soldier
+@inject UserService session
+@inject DBServices db
+
+@if (session.LoggedInUser == null)
+{
+    session.LoggedInUser = new User("dinkledorf", "1");
+    session.LoggedInUser.soldiers.Add(new Soldier("Dinkle Dorfington",SoldierRace.WHITE,Loyalty.NATIONALIST));
+    session.LoggedInUser.soldiers[0].soldierClass = SoldierClass.HEAVY;
+    session.LoggedInUser.soldiers[0].healthStatus = SoldierHealthStatus.GUT_WOUND;
+    session.LoggedInUser.soldiers[0].availableSkillPoints = 5;
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SNEAK));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.DIMENSIONAL_MANIPULATION));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.DIMENSIONAL_MANIPULATION));
+
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.DIMENSIONAL_MANIPULATION));
+
+    session.LoggedInUser.soldiers[0].roleAvailableForAssignment = true;
+}
+
+<SoldierCard soldier="session.LoggedInUser.soldiers[0]"></SoldierCard>
+
+
+
+
+@code {
+    
+}

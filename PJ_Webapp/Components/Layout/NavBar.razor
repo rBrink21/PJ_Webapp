@@ -19,15 +19,17 @@
                 </li>
                 @if (session.LoggedInUser != null)
                 {
-                    <li class="nav-item">
-                        <NavLink class="nav-link" href="SoldierCreation">
-                            Soldier Creation
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink href="RosterManagement" class="nav-link">
-                            Roster
-                        </NavLink>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="dropdown-toggle nav-link" role="button" data-bs-toggle="dropdown">Roster</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <NavLink class="dropdown-item" href="RosterManagement">Active Soldiers</NavLink>
+                            </li>
+                            <li>
+                                <NavLink class="dropdown-item" href="SoldierCreation">Recruit New Soldiers</NavLink>
+                            </li>
+                            
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <NavLink href="Stockpile" class="nav-link">Resources</NavLink>

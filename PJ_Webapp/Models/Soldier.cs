@@ -21,6 +21,12 @@ public class Soldier
     public Loyalty loyalty { get; set; }
     public string characterSheetLink { get; set; } //TODO add button for management of character sheet links
 
+    public int aim { get; set; } = 1;
+    public int toughness { get; set; } = 1;
+    public int will { get; set; } = 1;
+    public int agility { get; set; } = 1;
+    public int power { get; set; } = 1; 
+
     public SoldierHealthStatus healthStatus { get; set; } = SoldierHealthStatus.HEALTHY;
     
     // Defaults
