@@ -145,7 +145,7 @@ public class Soldier
             
         }
         
-        if (soldierClass == SoldierClass.ARTISAN || level != 5)
+        if (soldierClass == SoldierClass.ARTISAN && level != 5)
         {
             availableSkillPoints += 4;
         }

@@ -27,6 +27,11 @@ public class Skill
 
     public int GetUpgradeCost()
     {
+        if (name.GetCategory() == "Artisan Skills")
+        {
+            return 1;
+        }
+        // if field skill
         return level + 1;
     }
 }
