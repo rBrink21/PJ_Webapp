@@ -4,8 +4,11 @@
 @using PJ_Webapp.Models.Enums
 @inject UserService session
 @inject DBServices db
+@inject NavigationManager nav
+@using PJ_Webapp.Components.Panels
 @rendermode InteractiveServer
 <link rel="stylesheet" href="site.css">
+
 @if (session.LoggedInUser is { isAdmin: true } || debug)
 {
     //This screen honestly blows, i need to rework the whole thing at some point

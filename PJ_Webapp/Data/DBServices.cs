@@ -80,9 +80,13 @@ public class DBServices
     public Resource GetResourceByType(ResourceType type)
     {
         Resource? result = dataContext.resources.FirstOrDefault(r => r.type == type);
-        dataContext.resources.Attach(result);
-        return result;
-        //Not possible null reference return, all resources in the ENUM are populated at start of program.
+        
+        if (result != null)
+        {
+            dataContext.resources.Attach(result);
+        }
+        // Goes from ? to ! because all enum types are populated
+        return result!;
 
     }
     public Resource? GetResourceByName(string name)

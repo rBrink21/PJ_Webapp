@@ -1,11 +1,13 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-<PageTitle>Home</PageTitle>
+<PageTitle>Login</PageTitle>
 @using PJ_Webapp.Models
 @using PJ_Webapp.Data
 @using Microsoft.IdentityModel.Tokens
+@using System.Runtime.CompilerServices
 @inject DBServices db
 @inject UserService session
+@inject NavigationManager nav
 <form class="container-sm">
     @if (session.LoggedInUser == null)
     {
@@ -24,8 +26,7 @@
                 <button @onclick="Login" type="button" class="btn btn-primary">Log in</button>
                 <button @onclick="CreateUser" type="button" class="btn btn-success  float-end">Create Account</button>
             </div>
-        </div>
-        
+        </div>  
     }
 
     @if (!string.IsNullOrWhiteSpace(operationResultText))
@@ -81,7 +82,7 @@
             
                 session.UserChanged();
                 StateHasChanged();
-            
+
         }
         else
         {

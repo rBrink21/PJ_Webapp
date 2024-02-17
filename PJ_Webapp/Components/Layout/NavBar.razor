@@ -1,9 +1,10 @@
 @using PJ_Webapp.Data
 @inject UserService session
+@inject NavigationManager nav
 @rendermode InteractiveServer
 <nav class="navbar navbar-expand-sm container-fluid bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="">
             <img class="d-inline-block align-text-center" src="images/janus.png" height="30" width="30"/>
             Project Janus
         </a>
@@ -12,13 +13,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg0">
-                <li class="nav-item">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-                    </NavLink>
-                </li>
+
                 @if (session.LoggedInUser != null)
                 {
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="dashboard" Match="NavLinkMatch.All">
+                            <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                        </NavLink>
+                    </li>
                     <li class="nav-item dropdown">
                         <a href="#" class="dropdown-toggle nav-link" role="button" data-bs-toggle="dropdown">Roster</a>
                         <ul class="dropdown-menu">
@@ -53,7 +55,7 @@
 </nav>
 
 @code {
-    bool debug = true;
+    bool debug = false;
 
     private void LogOut()
     {

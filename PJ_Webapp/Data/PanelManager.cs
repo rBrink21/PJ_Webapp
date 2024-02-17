@@ -11,7 +11,8 @@ public class PanelManager
     {
         NONE,
         SKILL_POINT_SPEND_PANEL,
-        ROLE_ASSIGN_PANEL
+        ROLE_ASSIGN_PANEL,
+        ATTRIBUTE_SPEND_PANEL
     }
 
     private PanelType currentPanel;
@@ -38,5 +39,10 @@ public class PanelManager
     public bool IsPanelOpen(PanelType panel)
     {
         return currentPanel == panel;
+    }
+
+    public void UiUpdated()
+    {
+        OnChange?.Invoke();
     }
 }

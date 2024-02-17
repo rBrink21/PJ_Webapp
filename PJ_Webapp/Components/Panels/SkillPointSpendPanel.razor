@@ -4,7 +4,7 @@
 @inject DBServices db
 @inject PanelManager pm
 @rendermode InteractiveServer
-<div class="container border bg-dark bg-opacity-75 w-50">
+<div class="container border bg-dark w-50 panel-floating">
     <div class="container mt-2 d-flex justify-content-between border-bottom">
         <h3>@soldier.name </h3>
         <span>Available Skill Points
@@ -92,9 +92,11 @@
 
     private void AddNewSkill(SoldierSkill skill)
     {
+        if (SoldierOwnsSkill(skill)) return;
         soldier.InitializeSkill(skill);
         soldier.availableSkillPoints -= NEW_SKILL_COST;
         db.SaveChanges();
+        
         StateHasChanged();
     }
 

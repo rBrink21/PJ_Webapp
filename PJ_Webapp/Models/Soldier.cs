@@ -22,6 +22,7 @@ public class Soldier
     public Loyalty loyalty { get; set; }
     public string characterSheetLink { get; set; } //TODO add button for management of character sheet links
 
+    //Attributes
     public int aim { get; set; } = 1;
     public int toughness { get; set; } = 1;
     public int will { get; set; } = 1;
@@ -38,6 +39,7 @@ public class Soldier
     
     // Instance Variables;
     public int availableSkillPoints { get; set; } = 0;
+    public int availableTalentPoints { get; set; } = 0;
     public bool roleAvailableForAssignment { get; set; } = false;
     public Soldier()
     {
@@ -117,7 +119,22 @@ public class Soldier
                     availableSkillPoints += 3;
                     break;
                 }
-                //TODO Expand case structure
+                case 3:
+                {
+                    availableTalentPoints += 1;
+                    break;
+                }
+                case 4:
+            {
+                availableSkillPoints += 2;
+                break;
+            }
+            case 5:
+            {
+                availableTalentPoints += 1;
+                break;
+            }
+                //TODO Fix function
         }
     }
     public int GetLevelUpCost()

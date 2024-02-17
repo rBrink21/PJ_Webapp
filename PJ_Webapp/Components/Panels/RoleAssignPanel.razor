@@ -6,7 +6,7 @@
 @inject PanelManager pm
 
 @rendermode InteractiveServer
-<div class="container w-50 border bg-dark bg-opacity-75 mt-1">
+<div class="container w-50 border bg-dark mt-1 panel-floating">
     <div class="d-flex justify-content-between">
         
         <h3>Class Selection</h3>
@@ -14,7 +14,7 @@
     </div>
     <h5 class="text-secondary">@soldier.name Level @soldier.level @soldier.soldierClass.ToCustomString()</h5>
     <div class="d-flex flex-column">
-        <div class="btn-group">
+        <div class="btn-group mb-3">
              @foreach (SoldierClass role in Enum.GetValues(typeof(SoldierClass)))
                 {
                     if (role == SoldierClass.GRUNT) continue;
@@ -46,6 +46,7 @@
             soldier.AssignClass(selectedClass.Value);
             db.SaveChanges();
             StateHasChanged();
+            pm.ClosePanel();
         }
     }
 }

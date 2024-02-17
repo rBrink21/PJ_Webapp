@@ -1,8 +1,11 @@
 @using PJ_Webapp.Models
 @using PJ_Webapp.Models.Enums
 @using PJ_Webapp.Data
+@rendermode InteractiveServer
 @inject PanelManager pm
-<div class="border container w-75 bg-body-tertiary bg-opacity-75 row">
+@inject DBServices db
+
+<div class="border container w-75 bg-body-tertiary bg-opacity-75 mb-3 row">
     <div class="col-xxl-2">
         <h5>@soldier.name 
             @if (@soldier.availableSkillPoints > 0)
@@ -25,19 +28,36 @@
         <div class="d-flex flex-row">
             <div class="col-xxl  border-end align-items-center">
                 <div class="mt-lg-4">
-                    <i class="bi bi-crosshair"></i>Aim @soldier.aim
-                    <i class="bi bi-bricks"></i>Toughness @soldier.toughness
-                    <i class="bi bi-feather"></i>Agility @soldier.agility
-                    <i class="bi bi-fire"></i>Will @soldier.will
-                    <i class="bi bi-cloud-lightning"></i>Power @soldier.power
+                    <i class="bi bi-crosshair"></i> @soldier.aim Aim
+                    <i class="bi bi-bricks"></i> @soldier.toughness Toughness
+                    <i class="bi bi-feather"></i> @soldier.agility Agility
+                    <i class="bi bi-fire"></i> @soldier.will Will
+                    <i class="bi bi-cloud-lightning"></i> @soldier.power Power
+                    @if (soldier.availableTalentPoints > 0)
+                    {
+                        <div class="badge bg-danger">Point Available!</div>
+                    }
                 </div>
 
             </div>
             <div class="col d-flex flex-row ms-2 mb-1">
-                <button class="btn btn-secondary me-2">Level Up</button>
-                <button @onclick="OpenRoleAssign" class="btn btn-secondary me-2">Assign Role</button>
-                <button @onclick="OpenSkillPointSpend" class="btn btn-secondary me-2">Spend Skill Points</button>
-                <button class="btn btn-secondary">Increase Attribute</button>
+                @if (db.GetResourceByType(ResourceType.T1_MANA).amount > soldier.GetLevelUpCost() && !soldier.roleAvailableForAssignment)
+                {
+                    <button @onclick="LevelUp" class="btn btn-secondary me-2">Level Up</button>
+                }
+                @if (soldier.roleAvailableForAssignment)
+                {
+                    <button @onclick="OpenRoleAssign" class="btn btn-secondary me-2">Assign Role</button>
+                }
+                @if (soldier.availableSkillPoints > 0)
+                {
+                    <button @onclick="OpenSkillPointSpend" class="btn btn-secondary me-2">Spend Skill Points</button>
+                }
+                @if (soldier.availableTalentPoints > 0)
+                {
+                    <button @onclick="OpenAttributeSpend" class="btn btn-secondary">Increase Attribute</button>
+
+                }
             </div>
         </div>
         <div class="d-flex flex-row mb-2">
@@ -69,6 +89,11 @@
 @code {
     [Parameter] public Soldier soldier { get; set; }
 
+    protected override void OnInitialized()
+    {
+        pm.OnChange += StateHasChanged;
+    }
+
     private void OpenRoleAssign()
     {
         pm.OpenPanel(PanelManager.PanelType.ROLE_ASSIGN_PANEL,soldier);
@@ -77,5 +102,23 @@
     private void OpenSkillPointSpend()
     {
         pm.OpenPanel(PanelManager.PanelType.SKILL_POINT_SPEND_PANEL,soldier);
+    }
+
+    private void OpenAttributeSpend()
+    {
+        pm.OpenPanel(PanelManager.PanelType.ATTRIBUTE_SPEND_PANEL,soldier);
+    }
+
+    private void LevelUp()
+    {
+        Resource manaStones = db.GetResourceByType(ResourceType.T1_MANA);
+        if (soldier.GetLevelUpCost() > manaStones.amount)
+        {
+            return;
+        }
+        manaStones.amount -= soldier.GetLevelUpCost();
+        soldier.LevelUp();
+        db.SaveChanges();
+        pm.UiUpdated();
     }
 }

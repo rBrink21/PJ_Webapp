@@ -4,6 +4,7 @@
 @using PJ_Webapp.Models.Enums
 @inject DBServices db
 @inject UserService session
+@inject NavigationManager nav
 @rendermode InteractiveServer
 
 @if (session.LoggedInUser != null || debug_mode)

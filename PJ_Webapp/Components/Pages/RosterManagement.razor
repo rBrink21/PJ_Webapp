@@ -7,6 +7,7 @@
 @inject DBServices db
 @inject UserService session
 @inject PanelManager pm
+@inject NavigationManager nav
 @rendermode InteractiveServer
 
 
@@ -28,7 +29,10 @@
 {
     <SkillPointSpendPanel soldier="pm.currentSoldier"></SkillPointSpendPanel>
 }
-
+@if (pm.IsPanelOpen(PanelManager.PanelType.ATTRIBUTE_SPEND_PANEL))
+{
+    <AttributeSpendPanel soldier="pm.currentSoldier"></AttributeSpendPanel>
+}
 @code {
     // Dashboard goes here
 
