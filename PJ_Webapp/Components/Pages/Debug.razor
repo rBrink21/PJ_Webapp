@@ -3,6 +3,7 @@
 @using PJ_Webapp.Models
 @using PJ_Webapp.Models.Enums
 @using PJ_Webapp.Components.Soldier
+@using PJ_Webapp.Components.Panels
 @inject UserService session
 @inject DBServices db
 
@@ -14,23 +15,22 @@
     session.LoggedInUser.soldiers[0].healthStatus = SoldierHealthStatus.GUT_WOUND;
     session.LoggedInUser.soldiers[0].availableSkillPoints = 5;
     session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SNEAK));
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.FIX));
     session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.DIMENSIONAL_MANIPULATION));
-    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
-    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
-    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
-    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.SURVIVE));
-    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.DIMENSIONAL_MANIPULATION));
-
-    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.DIMENSIONAL_MANIPULATION));
-
+    session.LoggedInUser.soldiers[0].skills.Add(new Skill(SoldierSkill.MINE));
+    
     session.LoggedInUser.soldiers[0].roleAvailableForAssignment = true;
+}
+@code{
+    //Foreach soldier print a card, lay them out nice and then have the two panels globally that the buttons
+    // on the cards call to open and close?
 }
 
 <SoldierCard soldier="session.LoggedInUser.soldiers[0]"></SoldierCard>
-
-
+<SkillPointSpendPanel soldier="currentSoldier"></SkillPointSpendPanel>
+<RoleAssignPanel soldier="currentSoldier"></RoleAssignPanel>
 
 
 @code {
-    
+    Soldier currentSoldier;
 }

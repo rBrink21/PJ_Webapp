@@ -61,12 +61,15 @@ public class DBServices
 
     public User? GetUserByUsername(string username)
     {
-        User? user = dataContext.users.FirstOrDefault(u => u.username == username);
+        User? user = dataContext.users
+            .Include(u => u.soldiers)
+            .ThenInclude(s => s.skills)
+            .FirstOrDefault(u => u.username == username);
         if (user != null)
         {
             dataContext.users.Attach(user);
         }
-        
+    
         return user;
     }
 
