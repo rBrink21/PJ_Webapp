@@ -109,38 +109,58 @@ public class Soldier
         level += 1;
         switch (level)
         {
-                case 1:
-                {
-                    roleAvailableForAssignment = true;
-                    break;
-                }
-                case 2:
-                {
-                    availableSkillPoints += 3;
-                    break;
-                }
-                case 3:
-                {
-                    availableTalentPoints += 1;
-                    break;
-                }
-                case 4:
+            case 1:
+            {
+
+                roleAvailableForAssignment = true;
+                break;
+            }
+                
+            case 2:
+            {
+
+                availableSkillPoints += 3;
+                break;
+            }
+                
+            case 3:
+                
+            {
+                availableTalentPoints += 1;
+                break;
+                    
+            }
+                
+            case 4: 
             {
                 availableSkillPoints += 2;
                 break;
             }
             case 5:
             {
-                availableTalentPoints += 1;
+                // Allow t2 classes
+                //TODO Fix for t2
                 break;
             }
-                //TODO Fix function
+            
+        }
+        
+        if (soldierClass == SoldierClass.ARTISAN || level != 5)
+        {
+            availableSkillPoints += 4;
         }
     }
     public int GetLevelUpCost()
     {
         if (level >= levelUpCosts.Length)
         {
+            return int.MaxValue;
+        }
+
+        if (level == 4)
+        {
+            //Need some way to represent this state
+            //TODO for T2 needs fixed
             return int.MaxValue;
         }
         else
@@ -152,5 +172,11 @@ public class Soldier
     public void AssignClass(SoldierClass role){
         this.soldierClass = role;
         roleAvailableForAssignment = false;
+
+        if (role == SoldierClass.ARTISAN)
+        {
+            availableSkillPoints += 4;
+        }
+        
     }
 }
