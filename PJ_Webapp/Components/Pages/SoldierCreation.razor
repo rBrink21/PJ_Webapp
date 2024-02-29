@@ -114,33 +114,10 @@ else
     
 }
 
-<div id="debug-section">
-    <br>
-    <br/>
-    <br>
-    <br>
-    <span>debug mode</span> <input type="checkbox" @bind="debug_mode">
-    @if (debug_mode)
-    {
-        <div>
-            <h2>Debug</h2>
-            <p>PlayerId Override</p>
-            <input type="text" @bind="playerID">
-
-            <h2>Last Soldier</h2>
-            @if (lastSoldierMade != null)
-            {
-                <p>@lastSoldierMade.name</p>
-            }
-        </div>
-    }
-
-
-</div>
 @code {
 
     // Debug/Session info;
-    int playerID; //TODO Grab player ID from login session
+    
     Soldier lastSoldierMade = null;
     bool debug_mode;
 
@@ -156,7 +133,7 @@ else
 
     private void CreateSoldier()
     {
-        bool formFilled = soldierName != null && playerID != null && aSkill1 != null && aSkill2 != null;
+        bool formFilled = soldierName != null && session.LoggedInUser != null && aSkill1 != null && aSkill2 != null;
         if (formFilled)
         {
             Soldier newSoldier = new Soldier(soldierName, race, loyalty);

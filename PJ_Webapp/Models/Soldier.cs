@@ -20,7 +20,7 @@ public class Soldier
     public int mental { get; set; } 
     public SoldierRace soldierRace { get; set; }
     public Loyalty loyalty { get; set; }
-    public string characterSheetLink { get; set; } //TODO add button for management of character sheet links
+    public string characterSheetLink { get; set; }
 
     //Attributes
     public int aim { get; set; } = 1;
